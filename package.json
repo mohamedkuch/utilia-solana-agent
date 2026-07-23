@@ -4,7 +4,7 @@
   "description": "One-command x402 client and MCP bridge for paid Solana transaction intelligence from Utilia.",
   "type": "module",
   "bin": {
-    "utilia-solana-agent": "./src/cli.js"
+    "utilia-solana-agent": "src/cli.js"
   },
   "exports": {
     ".": "./src/index.js"
