@@ -34,6 +34,8 @@ npx skills add mohamedkuch/utilia-solana-agent \
 
 Then ask the agent to use `$utilia-pdf-to-markdown` on a public PDF. Install
 `utilia-solana-preflight` from the same repository for Solana transaction workflows.
+The PDF skill is also browsable on
+[Smithery](https://smithery.ai/skills/medksbuss/utilia-pdf-to-markdown).
 
 ## What agents can do
 
