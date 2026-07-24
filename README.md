@@ -29,8 +29,8 @@ settlement can use the guarded client below.
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.4.2 doctor
-npx -y utilia-solana-agent@0.4.2 audio-normalize \
+npx -y utilia-solana-agent@0.5.0 doctor
+npx -y utilia-solana-agent@0.5.0 audio-normalize \
   https://example.com/voice-note.wav --output voice-note-normalized.mp3
 ```
 
@@ -46,8 +46,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.4.2 doctor
-npx -y utilia-solana-agent@0.4.2 pdf-to-markdown https://example.com/document.pdf
+npx -y utilia-solana-agent@0.5.0 doctor
+npx -y utilia-solana-agent@0.5.0 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -107,6 +107,30 @@ You can alternatively set `SOLANA_PRIVATE_KEY` to a base58-encoded 64-byte priva
 key. Environment variables are inherited by the local process; the private key is
 never sent to Utilia.
 
+## Solana Agent Kit plugin
+
+Use the same wallet already attached to
+[Solana Agent Kit](https://github.com/sendaifun/solana-agent-kit). The plugin adds
+four budget-capped, read-only actions without asking for a second private key:
+
+```js
+import { SolanaAgentKit } from "solana-agent-kit";
+import { createUtiliaPlugin } from "utilia-solana-agent";
+
+const agent = new SolanaAgentKit(wallet, rpcUrl, {}).use(createUtiliaPlugin());
+
+const fees = await agent.methods.utiliaPriorityFees(agent, {
+  accounts: writableAccounts,
+});
+```
+
+The registered agent actions are `UTILIA_PRIORITY_FEES`,
+`UTILIA_SIMULATE_TRANSACTION`, `UTILIA_ANALYZE_TRANSACTION`, and
+`UTILIA_ANALYZE_TOKEN`. Payments are signed by the Agent Kit wallet only after the
+same receiver, asset, network, and per-call maximum checks described below pass.
+The wallet must implement Agent Kit's `signMessage()` method and hold a small amount
+of Solana mainnet USDC; the facilitator pays the transaction fee.
+
 ## Add it to an MCP client
 
 Add this stdio server to any MCP client that supports an executable command:
@@ -137,9 +161,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent@0.4.2 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
-npx -y utilia-solana-agent@0.4.2 pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent@0.4.2 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.5.0 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.5.0 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.5.0 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 

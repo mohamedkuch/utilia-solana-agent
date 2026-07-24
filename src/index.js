@@ -9,3 +9,7 @@ export {
   UTILIA_PAY_TO,
 } from "./policy.js";
 export { hasWalletConfiguration, loadWalletSigner } from "./wallet.js";
+export {
+  createSolanaAgentKitSigner,
+  createUtiliaPlugin,
+} from "./solana-agent-kit.js";
