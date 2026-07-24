@@ -10,3 +10,38 @@ test("keeps the runtime and package versions aligned", async () => {
   assert.equal(VERSION, packageJson.version);
   assert.equal(packageJson.mcpName, "ink.utilia/solana-preflight");
 });
+
+test("keeps every published instruction aligned with the current client", async () => {
+  const instructionPaths = [
+    "../README.md",
+    "../skills/utilia-solana-preflight/SKILL.md",
+    "../skills/utilia-pdf-to-markdown/SKILL.md",
+    "../skills/utilia-audio-normalization/SKILL.md",
+  ];
+  const instructionContents = await Promise.all(
+    instructionPaths.map((path) => readFile(new URL(path, import.meta.url), "utf8")),
+  );
+
+  for (const content of instructionContents) {
+    assert.match(
+      content,
+      new RegExp(`utilia-solana-agent@${VERSION.replaceAll(".", "\\.")}`),
+    );
+    const pinnedVersions = [
+      ...content.matchAll(/utilia-solana-agent@(\d+\.\d+\.\d+)/g),
+    ].map((match) => match[1]);
+    assert.deepEqual([...new Set(pinnedVersions)], [VERSION]);
+  }
+
+  const preflight = instructionContents[1];
+  for (const tool of [
+    "solana_priority_fees",
+    "solana_transaction_analysis",
+    "solana_token_analysis",
+    "solana_transaction_simulate",
+    "pdf_to_markdown",
+    "normalize_audio",
+  ]) {
+    assert.match(preflight, new RegExp(`\`${tool}\``));
+  }
+});

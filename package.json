@@ -1,6 +1,6 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "mcpName": "ink.utilia/solana-preflight",
   "description": "Pay-per-call audio normalization, PDF-to-Markdown, and budget-capped Solana x402 tools for autonomous agents.",
   "type": "module",
@@ -25,7 +25,7 @@
   "scripts": {
     "check": "node --check src/*.js",
     "test": "node --test",
-    "test:coverage": "c8 --all --include='src/*.js' --exclude='src/cli.js' --check-coverage --lines=100 --functions=100 --branches=100 --statements=100 node --experimental-test-module-mocks --test",
+    "test:coverage": "c8 --all --include='src/*.js' --check-coverage --lines=100 --functions=100 --branches=100 --statements=100 node --experimental-test-module-mocks --test",
     "pack:check": "npm pack --dry-run"
   },
   "keywords": [

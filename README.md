@@ -29,8 +29,8 @@ settlement can use the guarded client below.
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.1 doctor
-npx -y utilia-solana-agent@0.5.1 audio-normalize \
+npx -y utilia-solana-agent@0.5.2 doctor
+npx -y utilia-solana-agent@0.5.2 audio-normalize \
   https://example.com/voice-note.wav --output voice-note-normalized.mp3
 ```
 
@@ -46,8 +46,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.1 doctor
-npx -y utilia-solana-agent@0.5.1 pdf-to-markdown https://example.com/document.pdf
+npx -y utilia-solana-agent@0.5.2 doctor
+npx -y utilia-solana-agent@0.5.2 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -140,7 +140,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent@0.5.1", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.5.2", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -161,9 +161,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent@0.5.1 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
-npx -y utilia-solana-agent@0.5.1 pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent@0.5.1 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.5.2 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.5.2 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.5.2 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 
