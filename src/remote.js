@@ -4,14 +4,16 @@ import { toClientSvmSigner } from "@x402/svm";
 import { ExactSvmScheme } from "@x402/svm/exact/client";
 import { loadWalletSigner } from "./wallet.js";
 import { isAllowedPayment, UTILIA_MCP_URL } from "./policy.js";
+import { VERSION } from "./version.js";
 
 export async function connectUtilia(options = {}) {
   const signer = await loadWalletSigner(options.env);
   const endpoint = new URL(options.endpoint ?? options.env?.UTILIA_MCP_URL ?? UTILIA_MCP_URL);
-  if (!endpoint.searchParams.has("source")) endpoint.searchParams.set("source", "npm-client-0.4.0");
+  if (!endpoint.searchParams.has("source"))
+    endpoint.searchParams.set("source", `npm-client-${VERSION}`);
   const client = createx402MCPClient({
     name: options.name ?? "utilia-solana-agent",
-    version: "0.4.0",
+    version: VERSION,
     schemes: [
       {
         network: "solana:*",

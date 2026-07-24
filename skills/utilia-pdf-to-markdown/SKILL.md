@@ -25,7 +25,7 @@ user to configure it.
 Verify the wallet and live service before the first paid call:
 
 ```sh
-npx -y utilia-solana-agent@0.4.0 doctor
+npx -y utilia-solana-agent@0.4.2 doctor
 ```
 
 ## Convert
@@ -34,13 +34,13 @@ Accept only a public HTTPS URL that points to a PDF. Convert up to 50 pages by
 default:
 
 ```sh
-npx -y utilia-solana-agent@0.4.0 pdf-to-markdown <public-https-pdf-url>
+npx -y utilia-solana-agent@0.4.2 pdf-to-markdown <public-https-pdf-url>
 ```
 
 Set a lower or higher page ceiling, up to 100:
 
 ```sh
-npx -y utilia-solana-agent@0.4.0 pdf-to-markdown <public-https-pdf-url> --max-pages 100
+npx -y utilia-solana-agent@0.4.2 pdf-to-markdown <public-https-pdf-url> --max-pages 100
 ```
 
 Return the extracted Markdown or use it for the user's requested downstream task.

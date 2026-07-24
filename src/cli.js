@@ -6,6 +6,7 @@ import { runMcpBridge } from "./bridge.js";
 import { callUtiliaTool, connectUtilia } from "./remote.js";
 import { hasWalletConfiguration, loadWalletSigner } from "./wallet.js";
 import { MAX_ATOMIC_USDC, SOLANA_MAINNET, UTILIA_MCP_URL, UTILIA_PAY_TO } from "./policy.js";
+import { VERSION } from "./version.js";
 
 const help = `Utilia Agent Tools
 
@@ -31,8 +32,6 @@ Wallet:
 Every payment is restricted to Solana mainnet USDC, Utilia's receiver, and a
 maximum of 0.01 USDC. Use a dedicated low-balance automation wallet.
 `;
-
-const VERSION = "0.4.0";
 
 function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));

@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { connectUtilia } from "./remote.js";
+import { VERSION } from "./version.js";
 
 function forwarded(remote, tool) {
   return async (args) => {
@@ -21,7 +22,7 @@ function forwarded(remote, tool) {
 export async function runMcpBridge(options = {}) {
   const remote = await connectUtilia({ ...options, name: "utilia-solana-agent-bridge" });
   const server = new McpServer(
-    { name: "utilia-solana-agent", version: "0.2.0" },
+    { name: "utilia-solana-agent", version: VERSION },
     {
       instructions:
         "Use these wallet-funded paid tools for Solana intelligence and PDF-to-Markdown extraction. Each approved call costs at most 0.01 USDC.",
