@@ -13,7 +13,7 @@ const valid = {
       network: SOLANA_MAINNET,
       asset: SOLANA_USDC,
       payTo: UTILIA_PAY_TO,
-      amount: "8000",
+      amount: "10000",
     },
   ],
 };
@@ -26,7 +26,7 @@ for (const [name, field, value] of [
   ["receiver", "payTo", "attacker"],
   ["network", "network", "solana:devnet"],
   ["asset", "asset", "fake-usdc"],
-  ["amount", "amount", "8001"],
+  ["amount", "amount", "10001"],
 ]) {
   test(`rejects a mismatched ${name}`, () => {
     const changed = structuredClone(valid);

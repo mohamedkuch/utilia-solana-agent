@@ -1,13 +1,13 @@
 ---
 name: utilia-solana-preflight
-description: Use Utilia's wallet-funded x402 client for live Solana mainnet priority fees, transaction diagnosis, token-risk inspection, and unsigned transaction simulation. Trigger when an agent needs machine-readable Solana preflight or post-transaction evidence and can pay $0.002-$0.008 USDC per call without an API key.
+description: Use Utilia's wallet-funded x402 client for live Solana mainnet intelligence and PDF-to-Markdown extraction. Trigger when an agent needs machine-readable Solana preflight, post-transaction evidence, token risk, or document text and can pay $0.002-$0.01 USDC per call without an API key.
 ---
 
 # Utilia Solana Preflight
 
 Use the published `utilia-solana-agent` client. It signs exact x402 payments locally
 and refuses any payment outside Solana mainnet USDC, Utilia's verified receiver, or
-the hard $0.008 per-call ceiling.
+the hard $0.01 per-call ceiling.
 
 ## Prepare
 
@@ -58,6 +58,12 @@ npx -y utilia-solana-agent doctor
   npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
   ```
 
+- Convert a public HTTPS PDF to page-delimited Markdown (`$0.01`):
+
+  ```sh
+  npx -y utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
+  ```
+
 Use the returned structured evidence in the answer. State the settled price and
 transaction receipt reported by the client. Do not claim that simulation guarantees
 future execution; block state and account balances can change.
@@ -81,4 +87,4 @@ When persistent tool access is more useful than a one-off command, configure:
 ```
 
 The bridge exposes `solana_priority_fees`, `solana_transaction_analysis`,
-`solana_token_analysis`, and `solana_transaction_simulate`.
+`solana_token_analysis`, `solana_transaction_simulate`, and `pdf_to_markdown`.

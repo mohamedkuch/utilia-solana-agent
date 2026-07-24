@@ -1,7 +1,7 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.1.1",
-  "description": "One-command x402 client and MCP bridge for paid Solana transaction intelligence from Utilia.",
+  "version": "0.1.2",
+  "description": "One-command x402 client and MCP bridge for paid Solana intelligence and PDF-to-Markdown from Utilia.",
   "type": "module",
   "bin": {
     "utilia-solana-agent": "src/cli.js"
@@ -29,7 +29,9 @@
     "ai-agent",
     "transaction-simulation",
     "priority-fees",
-    "token-analysis"
+    "token-analysis",
+    "pdf-to-markdown",
+    "document-extraction"
   ],
   "author": "Mohamed Kechaou",
   "license": "MIT",

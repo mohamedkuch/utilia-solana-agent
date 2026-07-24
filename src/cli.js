@@ -8,7 +8,7 @@ import { MAX_ATOMIC_USDC, SOLANA_MAINNET, UTILIA_MCP_URL, UTILIA_PAY_TO } from "
 
 const help = `Utilia Solana Agent
 
-Wallet-funded x402 client and MCP bridge for Solana preflight intelligence.
+Wallet-funded x402 client and MCP bridge for Solana intelligence and PDF extraction.
 
 Usage:
   utilia-solana-agent doctor
@@ -16,6 +16,7 @@ Usage:
   utilia-solana-agent transaction <signature>
   utilia-solana-agent simulate <serialized-transaction> [base64|base58]
   utilia-solana-agent token <mint>
+  utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
   utilia-solana-agent call <tool-name> '<json-arguments>'
   utilia-solana-agent mcp
 
@@ -24,7 +25,7 @@ Wallet:
   or SOLANA_PRIVATE_KEY=<base58-encoded-64-byte-private-key>
 
 Every payment is restricted to Solana mainnet USDC, Utilia's receiver, and a
-maximum of 0.008 USDC. Use a dedicated low-balance automation wallet.
+maximum of 0.01 USDC. Use a dedicated low-balance automation wallet.
 `;
 
 async function doctor() {
@@ -59,7 +60,7 @@ async function main() {
     return;
   }
   if (command.type === "version") {
-    process.stdout.write("0.1.1\n");
+    process.stdout.write("0.1.2\n");
     return;
   }
   if (command.type === "doctor") {

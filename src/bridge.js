@@ -21,10 +21,10 @@ function forwarded(remote, tool) {
 export async function runMcpBridge(options = {}) {
   const remote = await connectUtilia({ ...options, name: "utilia-solana-agent-bridge" });
   const server = new McpServer(
-    { name: "utilia-solana-agent", version: "0.1.0" },
+    { name: "utilia-solana-agent", version: "0.1.2" },
     {
       instructions:
-        "Use these wallet-funded paid tools to simulate and diagnose Solana transactions, estimate fees, and inspect token risk. Each approved call costs at most 0.008 USDC.",
+        "Use these wallet-funded paid tools for Solana intelligence and PDF-to-Markdown extraction. Each approved call costs at most 0.01 USDC.",
     },
   );
 
@@ -71,6 +71,22 @@ export async function runMcpBridge(options = {}) {
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
     forwarded(remote, "solana_token_analysis"),
+  );
+  server.registerTool(
+    "pdf_to_markdown",
+    {
+      title: "Convert PDF to Markdown",
+      description:
+        "Extract a PDF into page-delimited Markdown with metadata and a source digest. Costs $0.01.",
+      inputSchema: {
+        url: z.string().url().max(2_048).optional(),
+        pdfBase64: z.string().max(11_200_000).optional(),
+        title: z.string().trim().min(1).max(200).optional(),
+        maxPages: z.coerce.number().int().min(1).max(100).default(50),
+      },
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    forwarded(remote, "pdf_to_markdown"),
   );
 
   const shutdown = async () => {
