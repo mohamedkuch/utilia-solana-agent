@@ -5,9 +5,9 @@ description: Use Utilia's wallet-funded x402 client for live Solana mainnet prio
 
 # Utilia Solana Preflight
 
-Use the published `utilia-solana-agent` client. It signs exact x402 payments locally
-and refuses any payment outside Solana mainnet USDC, Utilia's verified receiver, or
-the hard $0.01 per-call ceiling.
+Use the published `utilia-solana-agent` client. It signs exact x402 payments
+locally and refuses any payment outside Solana mainnet USDC, Utilia's verified
+receiver, or the hard $0.01 per-call ceiling.
 
 ## Prepare
 
@@ -21,15 +21,23 @@ export SOLANA_KEYPAIR_PATH=/absolute/path/to/low-balance-agent-wallet.json
 export SOLANA_PRIVATE_KEY='<base58-encoded-64-byte-private-key>'
 ```
 
-Never print, log, paste, or transmit the private key. Prefer a dedicated automation
-wallet with only a small USDC balance and enough SOL for fees. If neither variable is
-set, ask the user to configure one; do not invent or search for credentials.
+Never print, log, paste, or transmit the private key. Prefer a dedicated
+automation wallet with only a small USDC balance and enough SOL for fees. If
+neither variable is set, ask the user to configure one; do not invent or search
+for credentials.
 
 Verify the wallet and live service before the first paid call:
 
 ```sh
 npx -y utilia-solana-agent doctor
 ```
+
+## Data handling
+
+Treat every requested signature, mint, transaction, account address, and public
+PDF as data sent to Utilia for processing. Do not submit private documents or
+data the user is not authorized to share. The client sends payment only after
+validating the receiver, network, asset, and per-call price ceiling.
 
 ## Call the right tool
 
