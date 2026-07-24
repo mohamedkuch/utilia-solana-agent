@@ -1,7 +1,7 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.2.0",
-  "description": "Budget-capped Solana priority-fee watcher and x402 MCP client for autonomous agents.",
+  "version": "0.3.0",
+  "description": "Pay-per-conversion PDF-to-Markdown and budget-capped Solana x402 tools for autonomous agents.",
   "type": "module",
   "bin": {
     "utilia-solana-agent": "src/cli.js"
@@ -31,7 +31,10 @@
     "priority-fees",
     "token-analysis",
     "pdf-to-markdown",
-    "document-extraction"
+    "pdf-converter",
+    "pdf-extraction",
+    "document-extraction",
+    "llm-tools"
   ],
   "author": "Mohamed Kechaou",
   "license": "MIT",

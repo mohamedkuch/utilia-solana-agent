@@ -1,24 +1,39 @@
 # utilia-solana-agent
 
-Give a Solana bot a live priority-fee signal in one command. The package connects to
-[Utilia](https://utilia.ink), handles x402 payments locally, and can run as a
-budget-capped fee watcher, a normal CLI, or a standard stdio MCP server.
+Convert a public PDF to agent-ready Markdown or give a Solana bot a live priority-fee
+signal in one command. The package connects to [Utilia](https://utilia.ink), handles
+x402 payments locally, and can run as a guarded CLI, a budget-capped fee watcher, or
+a standard stdio MCP server.
 
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
 and $0.01 in Solana USDC.
 
+## PDF to Markdown in one command
+
+Use a dedicated low-balance Solana automation wallet that holds a small amount of
+mainnet USDC and SOL for fees:
+
+```sh
+export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
+npx -y utilia-solana-agent doctor
+npx -y utilia-solana-agent pdf-to-markdown https://example.com/document.pdf
+```
+
+Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
+metadata, and a source SHA-256 digest. Limit extraction with `--max-pages 20`.
+
 ## Install as an agent skill
 
-Install the guarded payment workflow into Codex, Claude Code, OpenClaw, Cursor, or
-any other agent supported by the open Skills CLI:
+Install the dedicated PDF skill into Codex, Claude Code, OpenClaw, Cursor, or any
+other agent supported by the open Skills CLI:
 
 ```sh
 npx skills add mohamedkuch/utilia-solana-agent \
-  --skill utilia-solana-preflight -g -y
+  --skill utilia-pdf-to-markdown -g -y
 ```
 
-Then ask the agent to use `$utilia-solana-preflight` before broadcasting a Solana
-transaction or interacting with an unfamiliar token.
+Then ask the agent to use `$utilia-pdf-to-markdown` on a public PDF. Install
+`utilia-solana-preflight` from the same repository for Solana transaction workflows.
 
 ## What agents can do
 
@@ -30,7 +45,7 @@ transaction or interacting with an unfamiliar token.
 | `solana_transaction_simulate` | Pre-broadcast simulation and failure classification | $0.008 |
 | `pdf_to_markdown` | Page-delimited Markdown, metadata, and a source digest | $0.0025 |
 
-## Quick start
+## Solana quick start
 
 Use a dedicated low-balance Solana automation wallet that holds a small amount of
 mainnet USDC and SOL for fees.
@@ -87,6 +102,7 @@ npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
 npx -y utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 

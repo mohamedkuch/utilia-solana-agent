@@ -52,7 +52,24 @@ test("parses the PDF shortcut", () => {
     tool: TOOL_NAMES.pdf,
     args: { url: "https://example.com/file.pdf", maxPages: 20 },
   });
+  assert.deepEqual(
+    parseCommand([
+      "pdf-to-markdown",
+      "https://example.com/file.pdf",
+      "--max-pages",
+      "20",
+    ]),
+    {
+      type: "call",
+      tool: TOOL_NAMES.pdf,
+      args: { url: "https://example.com/file.pdf", maxPages: 20 },
+    },
+  );
   assert.throws(() => parseCommand(["pdf", "https://example.com/file.pdf", "101"]), /maxPages/);
+  assert.throws(
+    () => parseCommand(["pdf-to-markdown", "https://example.com/file.pdf", "--max-pages"]),
+    /requires a value/,
+  );
 });
 
 test("rejects unknown commands", () => {

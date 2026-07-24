@@ -89,9 +89,19 @@ export function parseCommand(argv) {
     if (!rest[0]) throw new Error("token requires an SPL mint address");
     return { type: "call", tool: TOOL_NAMES.token, args: { mint: rest[0] } };
   }
-  if (command === "pdf") {
+  if (command === "pdf" || command === "pdf-to-markdown") {
     if (!rest[0]) throw new Error("pdf requires a public HTTPS PDF URL");
-    const maxPages = rest[1] === undefined ? 50 : Number(rest[1]);
+    const maxPagesValue = rest[1] === "--max-pages" ? rest[2] : rest[1];
+    if (rest[1] === "--max-pages" && maxPagesValue === undefined) {
+      throw new Error("pdf --max-pages requires a value");
+    }
+    if (rest[1] !== undefined && rest[1] !== "--max-pages" && rest.length > 2) {
+      throw new Error("pdf accepts a URL and optional maxPages");
+    }
+    if (rest[1] === "--max-pages" && rest.length > 3) {
+      throw new Error("pdf accepts a URL and optional --max-pages");
+    }
+    const maxPages = maxPagesValue === undefined ? 50 : Number(maxPagesValue);
     if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > 100) {
       throw new Error("pdf maxPages must be an integer from 1 to 100");
     }

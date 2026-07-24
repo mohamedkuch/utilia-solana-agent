@@ -8,10 +8,10 @@ import { isAllowedPayment, UTILIA_MCP_URL } from "./policy.js";
 export async function connectUtilia(options = {}) {
   const signer = await loadWalletSigner(options.env);
   const endpoint = new URL(options.endpoint ?? options.env?.UTILIA_MCP_URL ?? UTILIA_MCP_URL);
-  if (!endpoint.searchParams.has("source")) endpoint.searchParams.set("source", "npm-client-0.2.0");
+  if (!endpoint.searchParams.has("source")) endpoint.searchParams.set("source", "npm-client-0.3.0");
   const client = createx402MCPClient({
     name: options.name ?? "utilia-solana-agent",
-    version: "0.2.0",
+    version: "0.3.0",
     schemes: [
       {
         network: "solana:*",

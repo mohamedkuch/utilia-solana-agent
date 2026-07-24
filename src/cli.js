@@ -6,9 +6,9 @@ import { callUtiliaTool, connectUtilia } from "./remote.js";
 import { hasWalletConfiguration, loadWalletSigner } from "./wallet.js";
 import { MAX_ATOMIC_USDC, SOLANA_MAINNET, UTILIA_MCP_URL, UTILIA_PAY_TO } from "./policy.js";
 
-const help = `Utilia Solana Agent
+const help = `Utilia Agent Tools
 
-Wallet-funded x402 client and MCP bridge for Solana intelligence and PDF extraction.
+Wallet-funded x402 client for PDF-to-Markdown and live Solana intelligence.
 
 Usage:
   utilia-solana-agent doctor
@@ -18,6 +18,7 @@ Usage:
   utilia-solana-agent simulate <serialized-transaction> [base64|base58]
   utilia-solana-agent token <mint>
   utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
+  utilia-solana-agent pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
   utilia-solana-agent call <tool-name> '<json-arguments>'
   utilia-solana-agent mcp
 
@@ -29,7 +30,7 @@ Every payment is restricted to Solana mainnet USDC, Utilia's receiver, and a
 maximum of 0.01 USDC. Use a dedicated low-balance automation wallet.
 `;
 
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 
 function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
