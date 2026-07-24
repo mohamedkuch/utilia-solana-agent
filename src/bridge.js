@@ -4,8 +4,9 @@ import { z } from "zod";
 import { connectUtilia } from "./remote.js";
 import { VERSION } from "./version.js";
 
-function forwarded(remote, tool) {
+function forwarded(getRemote, tool) {
   return async (args) => {
+    const remote = await getRemote();
     const result = await remote.callTool(tool, args);
     if (result.paymentMade) {
       process.stderr.write(
@@ -20,7 +21,11 @@ function forwarded(remote, tool) {
 }
 
 export async function runMcpBridge(options = {}) {
-  const remote = await connectUtilia({ ...options, name: "utilia-solana-agent-bridge" });
+  let remote;
+  const getRemote = async () => {
+    remote ??= await connectUtilia({ ...options, name: "utilia-solana-agent-bridge" });
+    return remote;
+  };
   const server = new McpServer(
     { name: "utilia-solana-agent", version: VERSION },
     {
@@ -37,7 +42,7 @@ export async function runMcpBridge(options = {}) {
       inputSchema: { signature: z.string().min(64).max(100) },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
-    forwarded(remote, "solana_transaction_analysis"),
+    forwarded(getRemote, "solana_transaction_analysis"),
   );
   server.registerTool(
     "solana_transaction_simulate",
@@ -51,7 +56,7 @@ export async function runMcpBridge(options = {}) {
       },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
-    forwarded(remote, "solana_transaction_simulate"),
+    forwarded(getRemote, "solana_transaction_simulate"),
   );
   server.registerTool(
     "solana_priority_fees",
@@ -62,7 +67,7 @@ export async function runMcpBridge(options = {}) {
       inputSchema: { accounts: z.array(z.string()).max(20).default([]) },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
-    forwarded(remote, "solana_priority_fees"),
+    forwarded(getRemote, "solana_priority_fees"),
   );
   server.registerTool(
     "solana_token_analysis",
@@ -72,7 +77,7 @@ export async function runMcpBridge(options = {}) {
       inputSchema: { mint: z.string() },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
-    forwarded(remote, "solana_token_analysis"),
+    forwarded(getRemote, "solana_token_analysis"),
   );
   server.registerTool(
     "pdf_to_markdown",
@@ -88,7 +93,7 @@ export async function runMcpBridge(options = {}) {
       },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
-    forwarded(remote, "pdf_to_markdown"),
+    forwarded(getRemote, "pdf_to_markdown"),
   );
   server.registerTool(
     "normalize_audio",
@@ -104,12 +109,12 @@ export async function runMcpBridge(options = {}) {
       },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
-    forwarded(remote, "normalize_audio"),
+    forwarded(getRemote, "normalize_audio"),
   );
 
   const shutdown = async () => {
     await server.close().catch(() => undefined);
-    await remote.close().catch(() => undefined);
+    await remote?.close().catch(() => undefined);
   };
   process.once("SIGINT", () => void shutdown().finally(() => process.exit(0)));
   process.once("SIGTERM", () => void shutdown().finally(() => process.exit(0)));

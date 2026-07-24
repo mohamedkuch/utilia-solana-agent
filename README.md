@@ -29,8 +29,8 @@ settlement can use the guarded client below.
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.2 doctor
-npx -y utilia-solana-agent@0.5.2 audio-normalize \
+npx -y utilia-solana-agent@0.5.3 doctor
+npx -y utilia-solana-agent@0.5.3 audio-normalize \
   https://example.com/voice-note.wav --output voice-note-normalized.mp3
 ```
 
@@ -46,8 +46,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.2 doctor
-npx -y utilia-solana-agent@0.5.2 pdf-to-markdown https://example.com/document.pdf
+npx -y utilia-solana-agent@0.5.3 doctor
+npx -y utilia-solana-agent@0.5.3 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -140,7 +140,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent@0.5.2", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.5.3", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -149,9 +149,11 @@ Add this stdio server to any MCP client that supports an executable command:
 }
 ```
 
-The local bridge advertises all six Utilia tools. When the agent calls one, the
-bridge verifies the payment request, signs the exact USDC payment locally, and returns
-the paid result.
+The local bridge advertises all six Utilia tools without loading or transmitting a
+wallet. When the agent calls one, the bridge loads the configured wallet locally,
+verifies the payment request, signs the exact USDC payment, and returns the paid
+result. A wallet is therefore required for tool execution, not for MCP initialization
+or `tools/list`.
 
 ## CLI
 
@@ -161,9 +163,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent@0.5.2 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
-npx -y utilia-solana-agent@0.5.2 pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent@0.5.2 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.5.3 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.5.3 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.5.3 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 

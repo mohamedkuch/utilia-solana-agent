@@ -6,6 +6,7 @@ const signals = new Map();
 let connectFailure;
 let closeFailure;
 let remoteCloseFailure;
+let remoteConnectCalls = 0;
 let remoteResult = {
   content: [{ type: "text", text: '{"ok":true}' }],
   paymentMade: false,
@@ -60,6 +61,7 @@ mock.module(new URL("../src/remote.js", import.meta.url).href, {
   namedExports: {
     connectUtilia: async (options) => {
       assert.equal(options.name, "utilia-solana-agent-bridge");
+      remoteConnectCalls += 1;
       return remote;
     },
   },
@@ -73,6 +75,10 @@ test("registers and forwards all six paid tools", async (t) => {
     return process;
   });
   const stderr = [];
+  const exits = [];
+  t.mock.method(process, "exit", (code) => {
+    exits.push(code);
+  });
   t.mock.method(process.stderr, "write", (value) => {
     stderr.push(value);
     return true;
@@ -80,6 +86,7 @@ test("registers and forwards all six paid tools", async (t) => {
 
   await runMcpBridge({ endpoint: "https://api.utilia.ink/mcp" });
   const server = servers.at(-1);
+  assert.equal(remoteConnectCalls, 0);
   assert.deepEqual([...server.tools.keys()], [
     "solana_transaction_analysis",
     "solana_transaction_simulate",
@@ -94,6 +101,7 @@ test("registers and forwards all six paid tools", async (t) => {
   assert.equal(fees.definition.annotations.readOnlyHint, true);
   const result = await fees.handler({ accounts: [] });
   assert.deepEqual(result, { content: remoteResult.content });
+  assert.equal(remoteConnectCalls, 1);
 
   remoteResult = {
     content: [{ type: "text", text: '{"error":"failure"}' }],
@@ -104,20 +112,23 @@ test("registers and forwards all six paid tools", async (t) => {
   const failed = await server.tools.get("normalize_audio").handler({ url: "https://example.com" });
   assert.deepEqual(failed, { content: remoteResult.content, isError: true });
   assert.match(stderr[0], /receipt available/);
+
+  await signals.get("SIGTERM")();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(exits, [0]);
+  assert.ok(remote.closeCalls > 0);
 });
 
-test("closes local and remote servers when connection fails", async (t) => {
+test("closes the local server when stdio fails before wallet loading", async (t) => {
   t.mock.method(process, "once", () => process);
   connectFailure = new Error("transport failed");
   closeFailure = new Error("local close failed");
-  remoteCloseFailure = new Error("remote close failed");
   await assert.rejects(() => runMcpBridge(), /transport failed/);
   const server = servers.at(-1);
   assert.equal(server.closeCalls, 1);
-  assert.ok(remote.closeCalls > 0);
+  assert.equal(remoteConnectCalls, 1);
   connectFailure = undefined;
   closeFailure = undefined;
-  remoteCloseFailure = undefined;
 });
 
 test("handles SIGINT and SIGTERM shutdown callbacks", async (t) => {
@@ -135,4 +146,20 @@ test("handles SIGINT and SIGTERM shutdown callbacks", async (t) => {
   await signals.get("SIGTERM")();
   await new Promise((resolve) => setImmediate(resolve));
   assert.deepEqual(exits, [0, 0]);
+});
+
+test("suppresses remote close failures after a paid client is initialized", async (t) => {
+  signals.clear();
+  t.mock.method(process, "once", (signal, handler) => {
+    signals.set(signal, handler);
+    return process;
+  });
+  t.mock.method(process, "exit", () => undefined);
+  await runMcpBridge();
+  const server = servers.at(-1);
+  await server.tools.get("solana_priority_fees").handler({ accounts: [] });
+  remoteCloseFailure = new Error("remote close failed");
+  await signals.get("SIGINT")();
+  await new Promise((resolve) => setImmediate(resolve));
+  remoteCloseFailure = undefined;
 });
