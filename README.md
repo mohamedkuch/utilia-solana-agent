@@ -6,14 +6,31 @@ give a Solana bot a live priority-fee signal in one command. The package connect
 CLI, a budget-capped fee watcher, or a standard stdio MCP server.
 
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
-and $0.01 in Solana USDC.
+and $0.01 in USDC on Solana or Base.
+
+## Fastest wallet-managed proof
+
+Agents that already use AgentCash can make the lowest-cost live call without
+handling a private key directly:
+
+```sh
+npx -y agentcash@latest balance
+npx -y agentcash@latest fetch \
+  https://api.utilia.ink/base/v1/fees/priority --yes
+```
+
+This route returns live Solana priority-fee data and settles the exact **$0.002
+USDC** payment on Base. AgentCash creates and manages its own wallet on first
+use; `balance` reports its available funds and funding accounts. Utilia never
+receives or controls the payer's key. Agents that prefer native Solana
+settlement can use the guarded client below.
 
 ## Audio normalization in one command
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.4.0 doctor
-npx -y utilia-solana-agent@0.4.0 audio-normalize \
+npx -y utilia-solana-agent@0.4.1 doctor
+npx -y utilia-solana-agent@0.4.1 audio-normalize \
   https://example.com/voice-note.wav --output voice-note-normalized.mp3
 ```
 
@@ -29,8 +46,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.4.0 doctor
-npx -y utilia-solana-agent@0.4.0 pdf-to-markdown https://example.com/document.pdf
+npx -y utilia-solana-agent@0.4.1 doctor
+npx -y utilia-solana-agent@0.4.1 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -99,7 +116,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent@0.4.0", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.4.1", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -120,9 +137,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent@0.4.0 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
-npx -y utilia-solana-agent@0.4.0 pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent@0.4.0 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.4.1 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.4.1 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.4.1 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 

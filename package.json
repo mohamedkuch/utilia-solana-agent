@@ -1,6 +1,6 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Pay-per-call audio normalization, PDF-to-Markdown, and budget-capped Solana x402 tools for autonomous agents.",
   "type": "module",
   "bin": {
