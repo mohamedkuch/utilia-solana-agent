@@ -24,7 +24,7 @@ jobs:
           package-manager-cache: false
       - run: npm ci
       - run: npm run check
-      - run: npm test
+      - run: npm run test:coverage
       - run: npm run pack:check
       - name: Check whether this version is already published
         id: npm-version

@@ -11,7 +11,7 @@ Every payment must match all of these hard-coded constraints:
 - Solana mainnet
 - the official mainnet USDC mint
 - Utilia's published receiver
-- a positive amount no greater than 0.008 USDC
+- a positive amount no greater than 0.01 USDC
 
 The client rejects a payment request if any constraint differs.
 

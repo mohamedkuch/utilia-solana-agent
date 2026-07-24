@@ -46,3 +46,59 @@ test("rejects a mismatched output digest", async () => {
     /digest verification failed/,
   );
 });
+
+test("rejects malformed JSON, formats, base64, and byte counts", async () => {
+  await assert.rejects(() => saveNormalizedAudio("not json", "unused.mp3"), /invalid JSON/);
+  await assert.rejects(
+    () =>
+      saveNormalizedAudio(
+        JSON.stringify({ contentType: "audio/wav", encoding: "base64" }),
+        "unused.mp3",
+      ),
+    /unexpected audio format/,
+  );
+  for (const audioBase64 of [null, "", "abc", "!!!!"]) {
+    await assert.rejects(
+      () =>
+        saveNormalizedAudio(
+          JSON.stringify({
+            contentType: "audio/mpeg",
+            encoding: "base64",
+            outputBytes: 0,
+            outputSha256: "",
+            audioBase64,
+          }),
+          "unused.mp3",
+        ),
+      /invalid base64 audio/,
+    );
+  }
+  await assert.rejects(
+    () =>
+      saveNormalizedAudio(
+        JSON.stringify({
+          contentType: "audio/mpeg",
+          encoding: "base64",
+          outputBytes: "3",
+          outputSha256: "",
+          audioBase64: Buffer.from("abc").toString("base64"),
+        }),
+        "unused.mp3",
+      ),
+    /byte count/,
+  );
+  await assert.rejects(
+    () =>
+      saveNormalizedAudio(
+        JSON.stringify({
+          contentType: "audio/mpeg",
+          encoding: "base64",
+          outputBytes: 2,
+          outputSha256: "",
+          audioBase64: Buffer.from("abc").toString("base64"),
+        }),
+        "unused.mp3",
+      ),
+    /byte count/,
+  );
+});

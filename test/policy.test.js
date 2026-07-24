@@ -34,3 +34,20 @@ for (const [name, field, value] of [
     assert.equal(isAllowedPayment(changed), false);
   });
 }
+
+test("rejects missing and malformed payment requirements", () => {
+  assert.equal(isAllowedPayment(undefined), false);
+  assert.equal(isAllowedPayment({}), false);
+  assert.equal(isAllowedPayment({ accepts: [] }), false);
+  for (const amount of ["0", "-1", "1.5", "not-a-number", String(Number.MAX_SAFE_INTEGER + 1)]) {
+    const changed = structuredClone(valid);
+    changed.accepts[0].amount = amount;
+    assert.equal(isAllowedPayment(changed), false);
+  }
+});
+
+test("accepts a later matching requirement", () => {
+  const changed = structuredClone(valid);
+  changed.accepts.unshift({ ...changed.accepts[0], payTo: "wrong" });
+  assert.equal(isAllowedPayment(changed), true);
+});

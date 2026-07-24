@@ -100,3 +100,101 @@ test("returns structured action errors instead of throwing into the agent loop",
     message: "wallet has no USDC",
   });
 });
+
+test("validates the Agent Kit wallet interface", async () => {
+  assert.throws(() => createSolanaAgentKitSigner({}), /publicKey\.toBase58/);
+  assert.throws(
+    () =>
+      createSolanaAgentKitSigner({
+        wallet: { publicKey: { toBase58: () => "wallet" } },
+      }),
+    /support signMessage/,
+  );
+  const agent = createAgent();
+  agent.wallet.signMessage = async () => "not bytes";
+  await assert.rejects(
+    () =>
+      createSolanaAgentKitSigner(agent).signTransactions([
+        { messageBytes: new Uint8Array([1]) },
+      ]),
+    /invalid Ed25519 signature/,
+  );
+});
+
+test("forwards every plugin method with defaults and preserves error payloads", async () => {
+  const calls = [];
+  const responses = [
+    { content: [{ type: "text", text: "plain text" }], paymentMade: false },
+    { content: [{ type: "image", data: "x" }], isError: true },
+    { content: [] },
+    undefined,
+  ];
+  const plugin = createUtiliaPlugin({
+    clientOptions: { endpoint: "https://example.com/mcp" },
+    async callTool(tool, args, options) {
+      calls.push({ tool, args, options });
+      return responses.shift();
+    },
+  });
+  const agent = createAgent();
+
+  assert.deepEqual(await plugin.methods.utiliaPriorityFees(agent), {
+    status: "success",
+    data: "plain text",
+    payment: { made: false },
+  });
+  assert.deepEqual(
+    await plugin.methods.utiliaSimulateTransaction(agent, { transaction: "serialized" }),
+    {
+      status: "error",
+      data: [{ type: "image", data: "x" }],
+      payment: { made: false },
+    },
+  );
+  assert.deepEqual(
+    await plugin.methods.utiliaAnalyzeTransaction(agent, { signature: "signature" }),
+    {
+      status: "success",
+      data: [],
+      payment: { made: false },
+    },
+  );
+  assert.deepEqual(await plugin.methods.utiliaAnalyzeToken(agent, { mint: "mint" }), {
+    status: "success",
+    data: [],
+    payment: { made: false },
+  });
+
+  assert.deepEqual(calls.map(({ tool }) => tool), [
+    "solana_priority_fees",
+    "solana_transaction_simulate",
+    "solana_transaction_analysis",
+    "solana_token_analysis",
+  ]);
+  assert.deepEqual(calls[1].args, {
+    transaction: "serialized",
+    encoding: "base64",
+    accountAddresses: [],
+  });
+  assert.equal(calls[0].options.endpoint, "https://example.com/mcp");
+  assert.equal(plugin.initialize(agent), undefined);
+});
+
+test("stringifies non-Error action failures", async () => {
+  const plugin = createUtiliaPlugin({
+    async callTool() {
+      throw "wallet unavailable";
+    },
+  });
+  const action = plugin.actions.find((entry) => entry.name === "UTILIA_ANALYZE_TOKEN");
+  assert.deepEqual(await action.handler(createAgent(), { mint: "mint" }), {
+    status: "error",
+    message: "wallet unavailable",
+  });
+});
+
+test("constructs the plugin with its default remote caller", () => {
+  const plugin = createUtiliaPlugin();
+  assert.equal(plugin.name, "utilia");
+  assert.equal(plugin.actions.length, 4);
+});

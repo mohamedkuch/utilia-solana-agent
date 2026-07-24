@@ -25,7 +25,7 @@ export async function runMcpBridge(options = {}) {
     { name: "utilia-solana-agent", version: VERSION },
     {
       instructions:
-        "Use these wallet-funded paid tools for Solana intelligence and PDF-to-Markdown extraction. Each approved call costs at most 0.01 USDC.",
+        "Use these wallet-funded paid tools for Solana intelligence, PDF-to-Markdown extraction, and bounded audio normalization. Each approved call costs at most 0.01 USDC.",
     },
   );
 
@@ -89,6 +89,22 @@ export async function runMcpBridge(options = {}) {
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
     forwarded(remote, "pdf_to_markdown"),
+  );
+  server.registerTool(
+    "normalize_audio",
+    {
+      title: "Normalize Audio Loudness",
+      description:
+        "Normalize public HTTPS or base64 audio to a bounded MP3 with loudness evidence and content digests. Costs $0.01.",
+      inputSchema: {
+        url: z.string().url().max(2_048).optional(),
+        audioBase64: z.string().max(11_200_000).optional(),
+        targetLufs: z.coerce.number().min(-24).max(-12).default(-16),
+        maxSeconds: z.coerce.number().int().min(1).max(180).default(180),
+      },
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    forwarded(remote, "normalize_audio"),
   );
 
   const shutdown = async () => {
