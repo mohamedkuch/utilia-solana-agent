@@ -7,6 +7,19 @@ can run either as a normal CLI or a standard stdio MCP server.
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
 and $0.008 in Solana USDC.
 
+## Install as an agent skill
+
+Install the guarded payment workflow into Codex, Claude Code, OpenClaw, Cursor, or
+any other agent supported by the open Skills CLI:
+
+```sh
+npx skills add mohamedkuch/utilia-solana-agent \
+  --skill utilia-solana-preflight -g -y
+```
+
+Then ask the agent to use `$utilia-solana-preflight` before broadcasting a Solana
+transaction or interacting with an unfamiliar token.
+
 ## What agents can do
 
 | Tool | Result | Price |

@@ -59,7 +59,7 @@ async function main() {
     return;
   }
   if (command.type === "version") {
-    process.stdout.write("0.1.0\n");
+    process.stdout.write("0.1.1\n");
     return;
   }
   if (command.type === "doctor") {

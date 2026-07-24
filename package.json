@@ -1,6 +1,6 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-command x402 client and MCP bridge for paid Solana transaction intelligence from Utilia.",
   "type": "module",
   "bin": {
@@ -11,6 +11,7 @@
   },
   "files": [
     "src",
+    "skills",
     "README.md",
     "LICENSE",
     "SECURITY.md"

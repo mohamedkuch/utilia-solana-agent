@@ -10,7 +10,7 @@ export async function connectUtilia(options = {}) {
   const endpoint = options.endpoint ?? options.env?.UTILIA_MCP_URL ?? UTILIA_MCP_URL;
   const client = createx402MCPClient({
     name: options.name ?? "utilia-solana-agent",
-    version: "0.1.0",
+    version: "0.1.1",
     schemes: [
       {
         network: "solana:*",
