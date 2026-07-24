@@ -1,7 +1,7 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.3.0",
-  "description": "Pay-per-conversion PDF-to-Markdown and budget-capped Solana x402 tools for autonomous agents.",
+  "version": "0.4.0",
+  "description": "Pay-per-call audio normalization, PDF-to-Markdown, and budget-capped Solana x402 tools for autonomous agents.",
   "type": "module",
   "bin": {
     "utilia-solana-agent": "src/cli.js"
@@ -34,6 +34,9 @@
     "pdf-converter",
     "pdf-extraction",
     "document-extraction",
+    "audio-normalization",
+    "ffmpeg",
+    "podcast",
     "llm-tools"
   ],
   "author": "Mohamed Kechaou",

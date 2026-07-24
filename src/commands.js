@@ -4,6 +4,7 @@ export const TOOL_NAMES = {
   simulate: "solana_transaction_simulate",
   token: "solana_token_analysis",
   pdf: "pdf_to_markdown",
+  audio: "normalize_audio",
 };
 
 function parsePositiveInteger(value, label) {
@@ -60,6 +61,53 @@ function parseJson(value, label) {
   }
 }
 
+function parseAudioNormalize(rest) {
+  if (!rest[0]) throw new Error("audio-normalize requires a public HTTPS audio URL");
+  const options = {
+    output: "normalized.mp3",
+    targetLufs: -16,
+    maxSeconds: 180,
+  };
+  for (let index = 1; index < rest.length; index += 2) {
+    const flag = rest[index];
+    const value = rest[index + 1];
+    if (!value) throw new Error(`${flag} requires a value`);
+    if (flag === "--output") {
+      options.output = value;
+    } else if (flag === "--target-lufs") {
+      options.targetLufs = Number(value);
+      if (
+        !Number.isFinite(options.targetLufs) ||
+        options.targetLufs < -24 ||
+        options.targetLufs > -12
+      ) {
+        throw new Error("audio --target-lufs must be a number from -24 to -12");
+      }
+    } else if (flag === "--max-seconds") {
+      options.maxSeconds = Number(value);
+      if (
+        !Number.isInteger(options.maxSeconds) ||
+        options.maxSeconds < 1 ||
+        options.maxSeconds > 180
+      ) {
+        throw new Error("audio --max-seconds must be an integer from 1 to 180");
+      }
+    } else {
+      throw new Error(`Unknown audio option: ${flag}`);
+    }
+  }
+  return {
+    type: "audio",
+    tool: TOOL_NAMES.audio,
+    args: {
+      url: rest[0],
+      targetLufs: options.targetLufs,
+      maxSeconds: options.maxSeconds,
+    },
+    output: options.output,
+  };
+}
+
 export function parseCommand(argv) {
   const [command, ...rest] = argv;
   if (!command || command === "help" || command === "--help" || command === "-h") {
@@ -88,6 +136,9 @@ export function parseCommand(argv) {
   if (command === "token") {
     if (!rest[0]) throw new Error("token requires an SPL mint address");
     return { type: "call", tool: TOOL_NAMES.token, args: { mint: rest[0] } };
+  }
+  if (command === "audio" || command === "audio-normalize") {
+    return parseAudioNormalize(rest);
   }
   if (command === "pdf" || command === "pdf-to-markdown") {
     if (!rest[0]) throw new Error("pdf requires a public HTTPS PDF URL");

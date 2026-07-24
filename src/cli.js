@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { parseCommand } from "./commands.js";
+import { saveNormalizedAudio } from "./audio-output.js";
 import { runMcpBridge } from "./bridge.js";
 import { callUtiliaTool, connectUtilia } from "./remote.js";
 import { hasWalletConfiguration, loadWalletSigner } from "./wallet.js";
@@ -8,7 +9,7 @@ import { MAX_ATOMIC_USDC, SOLANA_MAINNET, UTILIA_MCP_URL, UTILIA_PAY_TO } from "
 
 const help = `Utilia Agent Tools
 
-Wallet-funded x402 client for PDF-to-Markdown and live Solana intelligence.
+Wallet-funded x402 client for audio, PDF-to-Markdown, and live Solana intelligence.
 
 Usage:
   utilia-solana-agent doctor
@@ -17,6 +18,7 @@ Usage:
   utilia-solana-agent transaction <signature>
   utilia-solana-agent simulate <serialized-transaction> [base64|base58]
   utilia-solana-agent token <mint>
+  utilia-solana-agent audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
   utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
   utilia-solana-agent pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
   utilia-solana-agent call <tool-name> '<json-arguments>'
@@ -30,7 +32,7 @@ Every payment is restricted to Solana mainnet USDC, Utilia's receiver, and a
 maximum of 0.01 USDC. Use a dedicated low-balance automation wallet.
 `;
 
-const VERSION = "0.3.0";
+const VERSION = "0.4.0";
 
 function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -118,6 +120,19 @@ async function main() {
   }
   if (command.type === "watch-fees") {
     await watchFees(command);
+    return;
+  }
+  if (command.type === "audio") {
+    const result = await callUtiliaTool(command.tool, command.args);
+    const text = result.content?.find((item) => item.type === "text")?.text;
+    if (!text) throw new Error("Utilia returned no audio result");
+    const saved = await saveNormalizedAudio(text, command.output);
+    process.stdout.write(`${JSON.stringify(saved, null, 2)}\n`);
+    if (result.paymentMade) {
+      process.stderr.write(
+        `Payment settled: ${result.paymentResponse?.transaction || "receipt available"}\n`,
+      );
+    }
     return;
   }
   if (command.type === "call") {

@@ -72,6 +72,49 @@ test("parses the PDF shortcut", () => {
   );
 });
 
+test("parses the audio normalization shortcut", () => {
+  assert.deepEqual(
+    parseCommand([
+      "audio-normalize",
+      "https://example.com/voice.wav",
+      "--output",
+      "voice-normalized.mp3",
+      "--target-lufs",
+      "-18",
+      "--max-seconds",
+      "90",
+    ]),
+    {
+      type: "audio",
+      tool: TOOL_NAMES.audio,
+      args: {
+        url: "https://example.com/voice.wav",
+        targetLufs: -18,
+        maxSeconds: 90,
+      },
+      output: "voice-normalized.mp3",
+    },
+  );
+  assert.deepEqual(parseCommand(["audio", "https://example.com/voice.wav"]), {
+    type: "audio",
+    tool: TOOL_NAMES.audio,
+    args: {
+      url: "https://example.com/voice.wav",
+      targetLufs: -16,
+      maxSeconds: 180,
+    },
+    output: "normalized.mp3",
+  });
+  assert.throws(
+    () => parseCommand(["audio", "https://example.com/voice.wav", "--target-lufs", "-30"]),
+    /-24 to -12/,
+  );
+  assert.throws(
+    () => parseCommand(["audio", "https://example.com/voice.wav", "--max-seconds", "181"]),
+    /1 to 180/,
+  );
+});
+
 test("rejects unknown commands", () => {
   assert.throws(() => parseCommand(["launch-token"]), /Unknown command/);
 });

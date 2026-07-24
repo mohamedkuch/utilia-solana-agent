@@ -1,12 +1,26 @@
 # utilia-solana-agent
 
-Convert a public PDF to agent-ready Markdown or give a Solana bot a live priority-fee
-signal in one command. The package connects to [Utilia](https://utilia.ink), handles
-x402 payments locally, and can run as a guarded CLI, a budget-capped fee watcher, or
-a standard stdio MCP server.
+Normalize public audio to a bounded MP3, convert a PDF to agent-ready Markdown, or
+give a Solana bot a live priority-fee signal in one command. The package connects to
+[Utilia](https://utilia.ink), handles x402 payments locally, and can run as a guarded
+CLI, a budget-capped fee watcher, or a standard stdio MCP server.
 
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
 and $0.01 in Solana USDC.
+
+## Audio normalization in one command
+
+```sh
+export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
+npx -y utilia-solana-agent@0.4.0 doctor
+npx -y utilia-solana-agent@0.4.0 audio-normalize \
+  https://example.com/voice-note.wav --output voice-note-normalized.mp3
+```
+
+The call costs exactly **$0.01 USDC**. It normalizes to -16 integrated LUFS by
+default, returns loudness evidence and content digests, verifies the output locally,
+and writes a 128 kbps MP3 without overwriting an existing file. Use
+`--target-lufs -18` or `--max-seconds 90` when needed.
 
 ## PDF to Markdown in one command
 
@@ -15,8 +29,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 doctor
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf-to-markdown https://example.com/document.pdf
+npx -y utilia-solana-agent@0.4.0 doctor
+npx -y utilia-solana-agent@0.4.0 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -33,7 +47,8 @@ npx skills add mohamedkuch/utilia-solana-agent \
 ```
 
 Then ask the agent to use `$utilia-pdf-to-markdown` on a public PDF. Install
-`utilia-solana-preflight` from the same repository for Solana transaction workflows.
+`utilia-audio-normalization` for audio workflows or `utilia-solana-preflight` for
+Solana transaction workflows.
 The PDF skill is also browsable on
 [skills.sh](https://skills.sh/mohamedkuch/utilia-solana-agent/utilia-pdf-to-markdown)
 and [Smithery](https://smithery.ai/skills/medksbuss/utilia-pdf-to-markdown).
@@ -47,6 +62,7 @@ and [Smithery](https://smithery.ai/skills/medksbuss/utilia-pdf-to-markdown).
 | `solana_token_analysis` | Authorities, Token-2022 controls, concentration, risk flags | $0.006 |
 | `solana_transaction_simulate` | Pre-broadcast simulation and failure classification | $0.008 |
 | `pdf_to_markdown` | Page-delimited Markdown, metadata, and a source digest | $0.0025 |
+| `normalize_audio` | Bounded normalized MP3, loudness measurements, and digests | $0.01 |
 
 ## Solana quick start
 
@@ -83,7 +99,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "github:mohamedkuch/utilia-solana-agent#befa103", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.4.0", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -92,7 +108,7 @@ Add this stdio server to any MCP client that supports an executable command:
 }
 ```
 
-The local bridge advertises all five Utilia tools. When the agent calls one, the
+The local bridge advertises all six Utilia tools. When the agent calls one, the
 bridge verifies the payment request, signs the exact USDC payment locally, and returns
 the paid result.
 
@@ -104,8 +120,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf <public-https-pdf-url> [max-pages]
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.4.0 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.4.0 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.4.0 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 
