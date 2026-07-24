@@ -32,9 +32,9 @@ Require one of:
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/low-balance-agent-wallet.json
 ```
 
-```sh
-export SOLANA_PRIVATE_KEY='<base58-encoded-64-byte-private-key>'
-```
+Alternatively, provide `SOLANA_PRIVATE_KEY` through the agent's environment or
+secret manager. Its value must be a base58-encoded 64-byte private key. Do not
+place the value directly in a command, prompt, source file, or skill document.
 
 Never print, log, paste, or transmit the private key. Prefer a dedicated
 automation wallet with only a small USDC balance and enough SOL for fees. If
