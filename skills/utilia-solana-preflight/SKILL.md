@@ -1,11 +1,11 @@
 ---
 name: utilia-solana-preflight
-description: Use Utilia's wallet-funded x402 client for live Solana mainnet priority fees, transaction diagnosis, token-risk inspection, unsigned transaction simulation, and PDF-to-Markdown conversion. Trigger when an agent needs machine-readable Solana evidence or public-PDF extraction and can pay $0.002-$0.008 USDC per call without an API key.
+description: Use Utilia's wallet-funded x402 client for live Solana mainnet priority fees, transaction diagnosis, token-risk inspection, unsigned transaction simulation, PDF-to-Markdown conversion, and audio normalization. Trigger when an agent needs machine-readable Solana evidence, public-PDF extraction, or bounded MP3 loudness normalization and can pay $0.002-$0.01 USDC per call without an API key.
 ---
 
 # Utilia Solana Preflight
 
-Use the published `utilia-solana-agent` client. It signs exact x402 payments
+Use the published `utilia-solana-agent@0.5.2` client. It signs exact x402 payments
 locally and refuses any payment outside Solana mainnet USDC, Utilia's verified
 receiver, or the hard $0.01 per-call ceiling.
 
@@ -44,53 +44,61 @@ for credentials.
 Verify the wallet and live service before the first paid call:
 
 ```sh
-npx -y utilia-solana-agent doctor
+npx -y utilia-solana-agent@0.5.2 doctor
 ```
 
 ## Data handling
 
-Treat every requested signature, mint, transaction, account address, and public
-PDF as data sent to Utilia for processing. Do not submit private documents or
-data the user is not authorized to share. The client sends payment only after
-validating the receiver, network, asset, and per-call price ceiling.
+Treat every requested signature, mint, transaction, account address, public PDF,
+and public audio file as data sent to Utilia for processing. Do not submit private
+documents, private recordings, or data the user is not authorized to share. The
+client sends payment only after validating the receiver, network, asset, and
+per-call price ceiling.
 
 ## Call the right tool
 
 - Estimate priority fees before broadcast (`$0.002`):
 
   ```sh
-  npx -y utilia-solana-agent fees [account1,account2]
+  npx -y utilia-solana-agent@0.5.2 fees [account1,account2]
   ```
 
 - Maintain a budget-capped JSONL fee feed at five calls per hour:
 
   ```sh
-  npx -y utilia-solana-agent watch-fees --every 12m --max-calls 25
+  npx -y utilia-solana-agent@0.5.2 watch-fees --every 12m --max-calls 25
   ```
 
 - Explain a confirmed or failed transaction (`$0.004`):
 
   ```sh
-  npx -y utilia-solana-agent transaction <signature>
+  npx -y utilia-solana-agent@0.5.2 transaction <signature>
   ```
 
 - Inspect an SPL mint for authorities, Token-2022 controls, and concentration
   (`$0.006`):
 
   ```sh
-  npx -y utilia-solana-agent token <mint>
+  npx -y utilia-solana-agent@0.5.2 token <mint>
   ```
 
 - Simulate an unsigned serialized transaction before signing (`$0.008`):
 
   ```sh
-  npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
+  npx -y utilia-solana-agent@0.5.2 simulate <serialized-transaction> [base64|base58]
   ```
 
 - Convert a public HTTPS PDF to page-delimited Markdown (`$0.0025`):
 
   ```sh
-  npx -y utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
+  npx -y utilia-solana-agent@0.5.2 pdf <public-https-pdf-url> [max-pages]
+  ```
+
+- Normalize a public HTTPS audio file into a bounded MP3 (`$0.01`):
+
+  ```sh
+  npx -y utilia-solana-agent@0.5.2 audio-normalize <public-https-audio-url> \
+    --output normalized.mp3
   ```
 
 Use the returned structured evidence in the answer. State the settled price and
@@ -106,7 +114,7 @@ When persistent tool access is more useful than a one-off command, configure:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.5.2", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/low-balance-agent-wallet.json"
       }
@@ -116,4 +124,5 @@ When persistent tool access is more useful than a one-off command, configure:
 ```
 
 The bridge exposes `solana_priority_fees`, `solana_transaction_analysis`,
-`solana_token_analysis`, `solana_transaction_simulate`, and `pdf_to_markdown`.
+`solana_token_analysis`, `solana_transaction_simulate`, `pdf_to_markdown`, and
+`normalize_audio`.
