@@ -1,6 +1,6 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "mcpName": "ink.utilia/solana-preflight",
   "description": "Pay-per-call audio normalization, PDF-to-Markdown, and budget-capped Solana x402 tools for autonomous agents.",
   "type": "module",
@@ -18,19 +18,27 @@
   "files": [
     "src",
     "skills",
+    "scripts/prepare-bundled-mcp.js",
     "README.md",
     "LICENSE",
     "SECURITY.md"
+  ],
+  "bundledDependencies": [
+    "@hono/node-server",
+    "@modelcontextprotocol/sdk",
+    "@x402/mcp"
   ],
   "scripts": {
     "check": "npm run format:check && npm run lint && npm run typecheck",
     "format:check": "prettier --check .github scripts src test skills README.md SECURITY.md package.json glama.json eslint.config.js tsconfig.json",
     "lint": "eslint scripts src test",
     "typecheck": "tsc --project tsconfig.json",
+    "prepack": "node scripts/prepare-bundled-mcp.js",
+    "consumer:check": "node scripts/verify-packed-consumer.js",
     "docker:smoke": "node scripts/docker-mcp-smoke.js",
     "test": "node --test",
     "test:coverage": "c8 --all --include='src/*.js' --check-coverage --lines=100 --functions=100 --branches=100 --statements=100 node --experimental-test-module-mocks --test",
-    "pack:check": "npm pack --dry-run"
+    "pack:check": "npm pack --dry-run --silent"
   },
   "keywords": [
     "solana",
@@ -64,6 +72,7 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@hono/node-server": "2.0.11",
     "@modelcontextprotocol/sdk": "1.29.0",
     "@solana/kit": "5.5.1",
     "@x402/mcp": "2.19.0",

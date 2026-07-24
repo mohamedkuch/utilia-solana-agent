@@ -31,6 +31,7 @@ jobs:
       - run: npm run check
       - run: npm run test:coverage
       - run: npm run pack:check
+      - run: npm run consumer:check
       - name: Build pinned production MCP image
         run: docker build --tag utilia-solana-agent:ci .
       - name: Verify MCP image initialization and six-tool discovery

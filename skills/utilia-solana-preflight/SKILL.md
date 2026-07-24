@@ -5,7 +5,7 @@ description: Use Utilia's wallet-funded x402 client for live Solana mainnet prio
 
 # Utilia Solana Preflight
 
-Use the published `utilia-solana-agent@0.5.4` client. It signs exact x402 payments
+Use the published `utilia-solana-agent@0.5.5` client. It signs exact x402 payments
 locally and refuses any payment outside Solana mainnet USDC, Utilia's verified
 receiver, or the hard $0.01 per-call ceiling.
 
@@ -44,7 +44,7 @@ for credentials.
 Verify the wallet and live service before the first paid call:
 
 ```sh
-npx -y utilia-solana-agent@0.5.4 doctor
+npx -y utilia-solana-agent@0.5.5 doctor
 ```
 
 ## Data handling
@@ -60,44 +60,44 @@ per-call price ceiling.
 - Estimate priority fees before broadcast (`$0.002`):
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 fees [account1,account2]
+  npx -y utilia-solana-agent@0.5.5 fees [account1,account2]
   ```
 
 - Maintain a budget-capped JSONL fee feed at five calls per hour:
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 watch-fees --every 12m --max-calls 25
+  npx -y utilia-solana-agent@0.5.5 watch-fees --every 12m --max-calls 25
   ```
 
 - Explain a confirmed or failed transaction (`$0.004`):
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 transaction <signature>
+  npx -y utilia-solana-agent@0.5.5 transaction <signature>
   ```
 
 - Inspect an SPL mint for authorities, Token-2022 controls, and concentration
   (`$0.006`):
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 token <mint>
+  npx -y utilia-solana-agent@0.5.5 token <mint>
   ```
 
 - Simulate an unsigned serialized transaction before signing (`$0.008`):
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 simulate <serialized-transaction> [base64|base58]
+  npx -y utilia-solana-agent@0.5.5 simulate <serialized-transaction> [base64|base58]
   ```
 
 - Convert a public HTTPS PDF to page-delimited Markdown (`$0.0025`):
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 pdf <public-https-pdf-url> [max-pages]
+  npx -y utilia-solana-agent@0.5.5 pdf <public-https-pdf-url> [max-pages]
   ```
 
 - Normalize a public HTTPS audio file into a bounded MP3 (`$0.01`):
 
   ```sh
-  npx -y utilia-solana-agent@0.5.4 audio-normalize <public-https-audio-url> \
+  npx -y utilia-solana-agent@0.5.5 audio-normalize <public-https-audio-url> \
     --output normalized.mp3
   ```
 
@@ -114,7 +114,7 @@ When persistent tool access is more useful than a one-off command, configure:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent@0.5.4", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.5.5", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/low-balance-agent-wallet.json"
       }
