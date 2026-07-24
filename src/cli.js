@@ -2,7 +2,7 @@
 
 import { parseCommand } from "./commands.js";
 import { runMcpBridge } from "./bridge.js";
-import { callUtiliaTool } from "./remote.js";
+import { callUtiliaTool, connectUtilia } from "./remote.js";
 import { hasWalletConfiguration, loadWalletSigner } from "./wallet.js";
 import { MAX_ATOMIC_USDC, SOLANA_MAINNET, UTILIA_MCP_URL, UTILIA_PAY_TO } from "./policy.js";
 
@@ -13,6 +13,7 @@ Wallet-funded x402 client and MCP bridge for Solana intelligence and PDF extract
 Usage:
   utilia-solana-agent doctor
   utilia-solana-agent fees [account1,account2]
+  utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts account1,account2]
   utilia-solana-agent transaction <signature>
   utilia-solana-agent simulate <serialized-transaction> [base64|base58]
   utilia-solana-agent token <mint>
@@ -27,6 +28,49 @@ Wallet:
 Every payment is restricted to Solana mainnet USDC, Utilia's receiver, and a
 maximum of 0.01 USDC. Use a dedicated low-balance automation wallet.
 `;
+
+const VERSION = "0.2.0";
+
+function sleep(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function watchFees(command) {
+  const maximumCostUsdc = command.maxCalls * 0.002;
+  process.stderr.write(
+    `Starting ${command.maxCalls} priority-fee calls every ${command.everySeconds}s ` +
+      `(maximum Utilia spend ${maximumCostUsdc.toFixed(3)} USDC; Ctrl-C to stop).\n`,
+  );
+  const client = await connectUtilia({ name: "utilia-priority-fee-watcher" });
+  try {
+    for (let call = 1; call <= command.maxCalls; call += 1) {
+      const startedAt = new Date().toISOString();
+      const result = await client.callTool("solana_priority_fees", {
+        accounts: command.accounts,
+      });
+      const text = result.content?.find((item) => item.type === "text")?.text;
+      let data = text;
+      try {
+        data = text === undefined ? null : JSON.parse(text);
+      } catch {
+        // Preserve unexpected non-JSON tool output for observability.
+      }
+      process.stdout.write(
+        `${JSON.stringify({
+          time: startedAt,
+          call,
+          maxCalls: command.maxCalls,
+          paidUsdc: result.paymentMade ? 0.002 : 0,
+          transaction: result.paymentResponse?.transaction || null,
+          data,
+        })}\n`,
+      );
+      if (call < command.maxCalls) await sleep(command.everySeconds * 1_000);
+    }
+  } finally {
+    await client.close().catch(() => undefined);
+  }
+}
 
 async function doctor() {
   if (!hasWalletConfiguration()) {
@@ -60,7 +104,7 @@ async function main() {
     return;
   }
   if (command.type === "version") {
-    process.stdout.write("0.1.2\n");
+    process.stdout.write(`${VERSION}\n`);
     return;
   }
   if (command.type === "doctor") {
@@ -69,6 +113,10 @@ async function main() {
   }
   if (command.type === "mcp") {
     await runMcpBridge();
+    return;
+  }
+  if (command.type === "watch-fees") {
+    await watchFees(command);
     return;
   }
   if (command.type === "call") {

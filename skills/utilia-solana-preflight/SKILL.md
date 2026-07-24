@@ -1,6 +1,6 @@
 ---
 name: utilia-solana-preflight
-description: Use Utilia's wallet-funded x402 client for live Solana mainnet intelligence and PDF-to-Markdown extraction. Trigger when an agent needs machine-readable Solana preflight, post-transaction evidence, token risk, or document text and can pay $0.002-$0.01 USDC per call without an API key.
+description: Use Utilia's wallet-funded x402 client for live Solana mainnet priority fees, transaction diagnosis, token-risk inspection, and unsigned transaction simulation. Trigger when an agent needs machine-readable Solana preflight or post-transaction evidence and can pay $0.002-$0.008 USDC per call without an API key.
 ---
 
 # Utilia Solana Preflight
@@ -39,6 +39,12 @@ npx -y utilia-solana-agent doctor
   npx -y utilia-solana-agent fees [account1,account2]
   ```
 
+- Maintain a budget-capped JSONL fee feed at five calls per hour:
+
+  ```sh
+  npx -y utilia-solana-agent watch-fees --every 12m --max-calls 25
+  ```
+
 - Explain a confirmed or failed transaction (`$0.004`):
 
   ```sh
@@ -58,7 +64,7 @@ npx -y utilia-solana-agent doctor
   npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
   ```
 
-- Convert a public HTTPS PDF to page-delimited Markdown (`$0.01`):
+- Convert a public HTTPS PDF to page-delimited Markdown (`$0.0025`):
 
   ```sh
   npx -y utilia-solana-agent pdf <public-https-pdf-url> [max-pages]

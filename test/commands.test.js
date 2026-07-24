@@ -10,6 +10,34 @@ test("parses the fee shortcut", () => {
   });
 });
 
+test("parses a budget-capped priority fee watcher", () => {
+  assert.deepEqual(
+    parseCommand([
+      "watch-fees",
+      "--every",
+      "12m",
+      "--max-calls",
+      "25",
+      "--accounts",
+      "one,two",
+    ]),
+    {
+      type: "watch-fees",
+      everySeconds: 720,
+      maxCalls: 25,
+      accounts: ["one", "two"],
+    },
+  );
+  assert.deepEqual(parseCommand(["watch-fees"]), {
+    type: "watch-fees",
+    everySeconds: 720,
+    maxCalls: 25,
+    accounts: [],
+  });
+  assert.throws(() => parseCommand(["watch-fees", "--every", "30s"]), /between 60 seconds/);
+  assert.throws(() => parseCommand(["watch-fees", "--max-calls", "501"]), /cannot exceed 500/);
+});
+
 test("parses generic JSON tool calls", () => {
   assert.deepEqual(parseCommand(["call", "solana_token_analysis", '{"mint":"abc"}']), {
     type: "call",

@@ -1,7 +1,7 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.1.2",
-  "description": "One-command x402 client and MCP bridge for paid Solana intelligence and PDF-to-Markdown from Utilia.",
+  "version": "0.2.0",
+  "description": "Budget-capped Solana priority-fee watcher and x402 MCP client for autonomous agents.",
   "type": "module",
   "bin": {
     "utilia-solana-agent": "src/cli.js"
