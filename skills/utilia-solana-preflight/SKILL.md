@@ -9,6 +9,21 @@ Use the published `utilia-solana-agent` client. It signs exact x402 payments
 locally and refuses any payment outside Solana mainnet USDC, Utilia's verified
 receiver, or the hard $0.01 per-call ceiling.
 
+## Fastest wallet-managed call
+
+Agents that already use AgentCash can make the lowest-cost live call without
+handling a private key directly:
+
+```sh
+npx -y agentcash@latest balance
+npx -y agentcash@latest fetch https://api.utilia.ink/v1/fees/priority --yes
+```
+
+AgentCash creates and manages its own wallet on first use. The wallet must have
+USDC before the paid call; `balance` reports the available funds and funding
+accounts. The `fetch` command negotiates the x402 challenge and pays exactly
+`$0.002` for the response. Utilia never receives or controls the payer's key.
+
 ## Prepare
 
 Require one of:
