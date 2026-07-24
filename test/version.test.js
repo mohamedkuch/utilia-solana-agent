@@ -19,7 +19,9 @@ test("keeps every published instruction aligned with the current client", async 
     "../skills/utilia-audio-normalization/SKILL.md",
   ];
   const instructionContents = await Promise.all(
-    instructionPaths.map((path) => readFile(new URL(path, import.meta.url), "utf8")),
+    instructionPaths.map((path) =>
+      readFile(new URL(path, import.meta.url), "utf8"),
+    ),
   );
 
   for (const content of instructionContents) {

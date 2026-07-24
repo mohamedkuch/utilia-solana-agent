@@ -2,7 +2,12 @@ import { saveNormalizedAudio } from "./audio-output.js";
 import { runMcpBridge } from "./bridge.js";
 import { parseCommand } from "./commands.js";
 import { callUtiliaTool, connectUtilia } from "./remote.js";
-import { MAX_ATOMIC_USDC, SOLANA_MAINNET, UTILIA_MCP_URL, UTILIA_PAY_TO } from "./policy.js";
+import {
+  MAX_ATOMIC_USDC,
+  SOLANA_MAINNET,
+  UTILIA_MCP_URL,
+  UTILIA_PAY_TO,
+} from "./policy.js";
 import { hasWalletConfiguration, loadWalletSigner } from "./wallet.js";
 import { VERSION } from "./version.js";
 
@@ -40,7 +45,10 @@ const defaults = {
   hasWalletConfiguration,
   loadWalletSigner,
   fetch,
-  sleep: (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+  sleep: (milliseconds) =>
+    new Promise((resolve) => {
+      setTimeout(resolve, milliseconds);
+    }),
   now: () => new Date(),
   stdout: process.stdout,
   stderr: process.stderr,
@@ -57,7 +65,9 @@ async function watchFees(command, dependencies) {
     `Starting ${command.maxCalls} priority-fee calls every ${command.everySeconds}s ` +
       `(maximum Utilia spend ${maximumCostUsdc.toFixed(3)} USDC; Ctrl-C to stop).\n`,
   );
-  const client = await dependencies.connectUtilia({ name: "utilia-priority-fee-watcher" });
+  const client = await dependencies.connectUtilia({
+    name: "utilia-priority-fee-watcher",
+  });
   try {
     for (let call = 1; call <= command.maxCalls; call += 1) {
       const startedAt = dependencies.now().toISOString();
@@ -81,7 +91,8 @@ async function watchFees(command, dependencies) {
           data,
         })}\n`,
       );
-      if (call < command.maxCalls) await dependencies.sleep(command.everySeconds * 1_000);
+      if (call < command.maxCalls)
+        await dependencies.sleep(command.everySeconds * 1_000);
     }
   } finally {
     await client.close().catch(() => undefined);
@@ -90,11 +101,14 @@ async function watchFees(command, dependencies) {
 
 async function doctor(dependencies) {
   if (!dependencies.hasWalletConfiguration(dependencies.env)) {
-    throw new Error("Wallet is not configured. Set SOLANA_KEYPAIR_PATH or SOLANA_PRIVATE_KEY.");
+    throw new Error(
+      "Wallet is not configured. Set SOLANA_KEYPAIR_PATH or SOLANA_PRIVATE_KEY.",
+    );
   }
   const signer = await dependencies.loadWalletSigner(dependencies.env);
   const response = await dependencies.fetch("https://api.utilia.ink/healthz");
-  if (!response.ok) throw new Error(`Utilia health check returned HTTP ${response.status}`);
+  if (!response.ok)
+    throw new Error(`Utilia health check returned HTTP ${response.status}`);
   const health = await response.json();
   dependencies.stdout.write(
     `${JSON.stringify(
@@ -137,7 +151,10 @@ export async function runCli(argv, overrides = {}) {
     return;
   }
   if (command.type === "audio") {
-    const result = await dependencies.callUtiliaTool(command.tool, command.args);
+    const result = await dependencies.callUtiliaTool(
+      command.tool,
+      command.args,
+    );
     const text = result.content?.find((item) => item.type === "text")?.text;
     if (!text) throw new Error("Utilia returned no audio result");
     const saved = await dependencies.saveNormalizedAudio(text, command.output);
@@ -150,7 +167,10 @@ export async function runCli(argv, overrides = {}) {
     return;
   }
   if (command.type === "call") {
-    const result = await dependencies.callUtiliaTool(command.tool, command.args);
+    const result = await dependencies.callUtiliaTool(
+      command.tool,
+      command.args,
+    );
     const text = result.content?.find((item) => item.type === "text")?.text;
     dependencies.stdout.write(`${text ?? JSON.stringify(result.content)}\n`);
     if (result.paymentMade) {

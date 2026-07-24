@@ -24,7 +24,10 @@ test("verifies and saves normalized MP3 output without overwriting", async () =>
     assert.equal(metadata.outputPath, outputPath);
     assert.equal("audioBase64" in metadata, false);
     assert.deepEqual(await readFile(outputPath), audio);
-    await assert.rejects(() => saveNormalizedAudio(result, outputPath), /EEXIST/);
+    await assert.rejects(
+      () => saveNormalizedAudio(result, outputPath),
+      /EEXIST/,
+    );
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -48,7 +51,10 @@ test("rejects a mismatched output digest", async () => {
 });
 
 test("rejects malformed JSON, formats, base64, and byte counts", async () => {
-  await assert.rejects(() => saveNormalizedAudio("not json", "unused.mp3"), /invalid JSON/);
+  await assert.rejects(
+    () => saveNormalizedAudio("not json", "unused.mp3"),
+    /invalid JSON/,
+  );
   await assert.rejects(
     () =>
       saveNormalizedAudio(

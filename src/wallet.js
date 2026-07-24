@@ -20,7 +20,9 @@ function parseKeypairFile(value) {
   if (!Array.isArray(parsed) || parsed.length !== 64) {
     throw new Error("SOLANA_KEYPAIR_PATH must contain exactly 64 bytes");
   }
-  if (parsed.some((byte) => !Number.isInteger(byte) || byte < 0 || byte > 255)) {
+  if (
+    parsed.some((byte) => !Number.isInteger(byte) || byte < 0 || byte > 255)
+  ) {
     throw new Error("SOLANA_KEYPAIR_PATH contains an invalid byte");
   }
   return Uint8Array.from(parsed);

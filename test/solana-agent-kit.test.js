@@ -82,7 +82,10 @@ test("registers four paid read-only actions and forwards the agent wallet signer
   assert.deepEqual(calls[0].args, {
     accounts: ["11111111111111111111111111111111"],
   });
-  assert.equal(calls[0].options.signer.address, "11111111111111111111111111111111");
+  assert.equal(
+    calls[0].options.signer.address,
+    "11111111111111111111111111111111",
+  );
   assert.equal(calls[0].options.source, "solana-agent-kit");
 });
 
@@ -93,7 +96,9 @@ test("returns structured action errors instead of throwing into the agent loop",
     },
   });
   const agent = createAgent();
-  const action = plugin.actions.find((entry) => entry.name === "UTILIA_PRIORITY_FEES");
+  const action = plugin.actions.find(
+    (entry) => entry.name === "UTILIA_PRIORITY_FEES",
+  );
 
   assert.deepEqual(await action.handler(agent, { accounts: [] }), {
     status: "error",
@@ -144,7 +149,9 @@ test("forwards every plugin method with defaults and preserves error payloads", 
     payment: { made: false },
   });
   assert.deepEqual(
-    await plugin.methods.utiliaSimulateTransaction(agent, { transaction: "serialized" }),
+    await plugin.methods.utiliaSimulateTransaction(agent, {
+      transaction: "serialized",
+    }),
     {
       status: "error",
       data: [{ type: "image", data: "x" }],
@@ -152,25 +159,33 @@ test("forwards every plugin method with defaults and preserves error payloads", 
     },
   );
   assert.deepEqual(
-    await plugin.methods.utiliaAnalyzeTransaction(agent, { signature: "signature" }),
+    await plugin.methods.utiliaAnalyzeTransaction(agent, {
+      signature: "signature",
+    }),
     {
       status: "success",
       data: [],
       payment: { made: false },
     },
   );
-  assert.deepEqual(await plugin.methods.utiliaAnalyzeToken(agent, { mint: "mint" }), {
-    status: "success",
-    data: [],
-    payment: { made: false },
-  });
+  assert.deepEqual(
+    await plugin.methods.utiliaAnalyzeToken(agent, { mint: "mint" }),
+    {
+      status: "success",
+      data: [],
+      payment: { made: false },
+    },
+  );
 
-  assert.deepEqual(calls.map(({ tool }) => tool), [
-    "solana_priority_fees",
-    "solana_transaction_simulate",
-    "solana_transaction_analysis",
-    "solana_token_analysis",
-  ]);
+  assert.deepEqual(
+    calls.map(({ tool }) => tool),
+    [
+      "solana_priority_fees",
+      "solana_transaction_simulate",
+      "solana_transaction_analysis",
+      "solana_token_analysis",
+    ],
+  );
   assert.deepEqual(calls[1].args, {
     transaction: "serialized",
     encoding: "base64",
@@ -186,7 +201,9 @@ test("stringifies non-Error action failures", async () => {
       throw "wallet unavailable";
     },
   });
-  const action = plugin.actions.find((entry) => entry.name === "UTILIA_ANALYZE_TOKEN");
+  const action = plugin.actions.find(
+    (entry) => entry.name === "UTILIA_ANALYZE_TOKEN",
+  );
   assert.deepEqual(await action.handler(createAgent(), { mint: "mint" }), {
     status: "error",
     message: "wallet unavailable",

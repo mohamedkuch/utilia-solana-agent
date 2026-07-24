@@ -97,7 +97,10 @@ test("runs a bounded fee watcher and preserves JSON and text results", async () 
                 paymentMade: true,
                 paymentResponse: { transaction: "signature" },
               }
-            : { content: [{ type: "text", text: "plain text" }], paymentMade: false };
+            : {
+                content: [{ type: "text", text: "plain text" }],
+                paymentMade: false,
+              };
         },
         async close() {
           closeCalls += 1;
@@ -167,7 +170,10 @@ test("saves audio and reports optional payment receipts", async () => {
   await runCli(["audio", "https://example.com/audio.wav"], {
     ...out.streams,
     callUtiliaTool: async () => ({
-      content: [{ type: "image" }, { type: "text", text: '{"audioBase64":"bXAz"}' }],
+      content: [
+        { type: "image" },
+        { type: "text", text: '{"audioBase64":"bXAz"}' },
+      ],
       paymentMade: true,
       paymentResponse: {},
     }),
@@ -217,6 +223,9 @@ test("calls generic tools with text and structured fallback output", async () =>
 });
 
 test("formats Error and non-Error failures", () => {
-  assert.equal(formatCliError(new Error("boom")), "utilia-solana-agent: boom\n");
+  assert.equal(
+    formatCliError(new Error("boom")),
+    "utilia-solana-agent: boom\n",
+  );
   assert.equal(formatCliError("boom"), "utilia-solana-agent: boom\n");
 });

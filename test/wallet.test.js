@@ -25,16 +25,22 @@ mock.module("@solana/kit", {
   },
 });
 
-const { hasWalletConfiguration, loadWalletSigner } = await import("../src/wallet.js");
+const { hasWalletConfiguration, loadWalletSigner } =
+  await import("../src/wallet.js");
 
 test("detects wallet configuration", () => {
   assert.equal(hasWalletConfiguration({}), false);
-  assert.equal(hasWalletConfiguration({ SOLANA_KEYPAIR_PATH: "/tmp/key.json" }), true);
+  assert.equal(
+    hasWalletConfiguration({ SOLANA_KEYPAIR_PATH: "/tmp/key.json" }),
+    true,
+  );
   assert.equal(hasWalletConfiguration({ SOLANA_PRIVATE_KEY: "secret" }), true);
 });
 
 test("loads and zeroes a JSON keypair through absolute and home paths", async () => {
-  fileContents = JSON.stringify(Array.from({ length: 64 }, (_, index) => index));
+  fileContents = JSON.stringify(
+    Array.from({ length: 64 }, (_, index) => index),
+  );
   assert.deepEqual(
     await loadWalletSigner({ SOLANA_KEYPAIR_PATH: "/tmp/keypair.json" }),
     { address: "wallet" },
@@ -64,7 +70,9 @@ test("rejects malformed JSON keypair files", async () => {
 });
 
 test("loads, validates, and zeroes base58 private keys", async () => {
-  const encoded = bs58.encode(Uint8Array.from({ length: 64 }, (_, index) => index));
+  const encoded = bs58.encode(
+    Uint8Array.from({ length: 64 }, (_, index) => index),
+  );
   await loadWalletSigner({ SOLANA_PRIVATE_KEY: encoded });
   assert.deepEqual([...signerInput], Array(64).fill(0));
 
@@ -73,7 +81,8 @@ test("loads, validates, and zeroes base58 private keys", async () => {
     /valid base58/,
   );
   await assert.rejects(
-    () => loadWalletSigner({ SOLANA_PRIVATE_KEY: bs58.encode(new Uint8Array(63)) }),
+    () =>
+      loadWalletSigner({ SOLANA_PRIVATE_KEY: bs58.encode(new Uint8Array(63)) }),
     /exactly 64 bytes/,
   );
 });
@@ -82,7 +91,10 @@ test("requires a wallet and zeroes secrets when signer creation fails", async ()
   await assert.rejects(() => loadWalletSigner({}), /Set SOLANA_KEYPAIR_PATH/);
   const encoded = bs58.encode(new Uint8Array(64).fill(7));
   signerFailure = new Error("signer failed");
-  await assert.rejects(() => loadWalletSigner({ SOLANA_PRIVATE_KEY: encoded }), /signer failed/);
+  await assert.rejects(
+    () => loadWalletSigner({ SOLANA_PRIVATE_KEY: encoded }),
+    /signer failed/,
+  );
   assert.deepEqual([...signerInput], Array(64).fill(0));
   signerFailure = undefined;
 });

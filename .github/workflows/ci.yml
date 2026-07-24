@@ -24,6 +24,10 @@ jobs:
       - run: npm run check
       - run: npm run test:coverage
       - run: npm run pack:check
+      - name: Build pinned production MCP image
+        run: docker build --tag utilia-solana-agent:ci .
+      - name: Verify MCP image initialization and six-tool discovery
+        run: npm run docker:smoke
       - name: Install pinned gitleaks
         env:
           GITLEAKS_VERSION: 8.28.0

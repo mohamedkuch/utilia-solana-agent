@@ -7,6 +7,13 @@ export const TOOL_NAMES = {
   audio: "normalize_audio",
 };
 
+/**
+ * @typedef {{type: "help" | "version" | "mcp" | "doctor"}
+ *   | {type: "watch-fees", everySeconds: number, maxCalls: number, accounts: string[]}
+ *   | {type: "audio", tool: string, args: Record<string, unknown>, output: string}
+ *   | {type: "call", tool: string, args: Record<string, unknown>}} ParsedCommand
+ */
+
 function parsePositiveInteger(value, label) {
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed < 1) {
@@ -17,17 +24,22 @@ function parsePositiveInteger(value, label) {
 
 function parseDuration(value) {
   const match = /^(\d+)(s|m|h)?$/i.exec(value);
-  if (!match) throw new Error("watch-fees --every must look like 60s, 12m, or 1h");
+  if (!match)
+    throw new Error("watch-fees --every must look like 60s, 12m, or 1h");
   const amount = parsePositiveInteger(match[1], "watch-fees --every");
   const multiplier = { s: 1, m: 60, h: 3_600 }[(match[2] ?? "s").toLowerCase()];
   const seconds = amount * multiplier;
   if (seconds < 60 || seconds > 86_400) {
-    throw new Error("watch-fees --every must be between 60 seconds and 24 hours");
+    throw new Error(
+      "watch-fees --every must be between 60 seconds and 24 hours",
+    );
   }
   return seconds;
 }
 
+/** @returns {Extract<ParsedCommand, {type: "watch-fees"}>} */
 function parseWatchFees(rest) {
+  /** @type {{everySeconds: number, maxCalls: number, accounts: string[]}} */
   const options = { everySeconds: 720, maxCalls: 25, accounts: [] };
   for (let index = 0; index < rest.length; index += 1) {
     const flag = rest[index];
@@ -61,8 +73,10 @@ function parseJson(value, label) {
   }
 }
 
+/** @returns {Extract<ParsedCommand, {type: "audio"}>} */
 function parseAudioNormalize(rest) {
-  if (!rest[0]) throw new Error("audio-normalize requires a public HTTPS audio URL");
+  if (!rest[0])
+    throw new Error("audio-normalize requires a public HTTPS audio URL");
   const options = {
     output: "normalized.mp3",
     targetLufs: -16,
@@ -108,9 +122,15 @@ function parseAudioNormalize(rest) {
   };
 }
 
+/** @returns {ParsedCommand} */
 export function parseCommand(argv) {
   const [command, ...rest] = argv;
-  if (!command || command === "help" || command === "--help" || command === "-h") {
+  if (
+    !command ||
+    command === "help" ||
+    command === "--help" ||
+    command === "-h"
+  ) {
     return { type: "help" };
   }
   if (command === "--version" || command === "-v") return { type: "version" };
@@ -123,14 +143,22 @@ export function parseCommand(argv) {
   }
   if (command === "transaction") {
     if (!rest[0]) throw new Error("transaction requires a Solana signature");
-    return { type: "call", tool: TOOL_NAMES.transaction, args: { signature: rest[0] } };
+    return {
+      type: "call",
+      tool: TOOL_NAMES.transaction,
+      args: { signature: rest[0] },
+    };
   }
   if (command === "simulate") {
     if (!rest[0]) throw new Error("simulate requires a serialized transaction");
     return {
       type: "call",
       tool: TOOL_NAMES.simulate,
-      args: { transaction: rest[0], encoding: rest[1] ?? "base64", accountAddresses: [] },
+      args: {
+        transaction: rest[0],
+        encoding: rest[1] ?? "base64",
+        accountAddresses: [],
+      },
     };
   }
   if (command === "token") {

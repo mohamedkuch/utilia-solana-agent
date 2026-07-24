@@ -32,7 +32,10 @@ function createFakeClient(options = {}) {
 
 test("builds canonical and caller-sourced MCP endpoints", () => {
   const generated = createEndpoint({});
-  assert.equal(generated.origin + generated.pathname, "https://api.utilia.ink/mcp");
+  assert.equal(
+    generated.origin + generated.pathname,
+    "https://api.utilia.ink/mcp",
+  );
   assert.match(generated.searchParams.get("source"), /^npm-client-/);
 
   const existing = createEndpoint({
@@ -53,7 +56,10 @@ test("resolves explicit and loaded signers", async () => {
     }),
     { address: "loaded" },
   );
-  await assert.rejects(() => resolveSigner({ env: {} }), /Set SOLANA_KEYPAIR_PATH/);
+  await assert.rejects(
+    () => resolveSigner({ env: {} }),
+    /Set SOLANA_KEYPAIR_PATH/,
+  );
 });
 
 test("constructs the guarded x402 client and HTTP transport", () => {
@@ -84,7 +90,10 @@ test("constructs the guarded x402 client and HTTP transport", () => {
 
   const realClient = createUtiliaClient(signer);
   assert.equal(typeof realClient.connect, "function");
-  const fakeTransport = createTransport(new URL("https://example.com"), (url) => ({ url }));
+  const fakeTransport = createTransport(
+    new URL("https://example.com"),
+    (url) => ({ url }),
+  );
   assert.equal(fakeTransport.url.hostname, "example.com");
   const realTransport = createTransport(new URL("https://api.utilia.ink/mcp"));
   assert.equal(typeof realTransport.start, "function");
@@ -135,10 +144,17 @@ test("closes a client after a connection failure", async () => {
 
 test("calls and always closes a remote tool client", async () => {
   const successful = createFakeClient();
-  const result = await callUtiliaTool("solana_priority_fees", { accounts: [] }, {}, {
-    connectUtilia: async () => successful,
+  const result = await callUtiliaTool(
+    "solana_priority_fees",
+    { accounts: [] },
+    {},
+    {
+      connectUtilia: async () => successful,
+    },
+  );
+  assert.deepEqual(result, {
+    content: [{ type: "text", text: '{"ok":true}' }],
   });
-  assert.deepEqual(result, { content: [{ type: "text", text: '{"ok":true}' }] });
   assert.equal(successful.closeCalls, 1);
 
   const failing = createFakeClient({
@@ -147,9 +163,14 @@ test("calls and always closes a remote tool client", async () => {
   });
   await assert.rejects(
     () =>
-      callUtiliaTool("solana_priority_fees", {}, {}, {
-        connectUtilia: async () => failing,
-      }),
+      callUtiliaTool(
+        "solana_priority_fees",
+        {},
+        {},
+        {
+          connectUtilia: async () => failing,
+        },
+      ),
     /call failed/,
   );
   assert.equal(failing.closeCalls, 1);
@@ -166,7 +187,9 @@ test("uses the default connection path with injected transport adapters", async 
       createTransport: () => ({}),
     },
   );
-  assert.deepEqual(result, { content: [{ type: "text", text: '{"ok":true}' }] });
+  assert.deepEqual(result, {
+    content: [{ type: "text", text: '{"ok":true}' }],
+  });
   assert.equal(client.connectCalls.length, 1);
   assert.equal(client.closeCalls, 1);
 });

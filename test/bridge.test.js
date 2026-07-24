@@ -87,14 +87,17 @@ test("registers and forwards all six paid tools", async (t) => {
   await runMcpBridge({ endpoint: "https://api.utilia.ink/mcp" });
   const server = servers.at(-1);
   assert.equal(remoteConnectCalls, 0);
-  assert.deepEqual([...server.tools.keys()], [
-    "solana_transaction_analysis",
-    "solana_transaction_simulate",
-    "solana_priority_fees",
-    "solana_token_analysis",
-    "pdf_to_markdown",
-    "normalize_audio",
-  ]);
+  assert.deepEqual(
+    [...server.tools.keys()],
+    [
+      "solana_transaction_analysis",
+      "solana_transaction_simulate",
+      "solana_priority_fees",
+      "solana_token_analysis",
+      "pdf_to_markdown",
+      "normalize_audio",
+    ],
+  );
   assert.ok(server.transport instanceof FakeTransport);
 
   const fees = server.tools.get("solana_priority_fees");
@@ -109,12 +112,16 @@ test("registers and forwards all six paid tools", async (t) => {
     paymentMade: true,
     paymentResponse: {},
   };
-  const failed = await server.tools.get("normalize_audio").handler({ url: "https://example.com" });
+  const failed = await server.tools
+    .get("normalize_audio")
+    .handler({ url: "https://example.com" });
   assert.deepEqual(failed, { content: remoteResult.content, isError: true });
   assert.match(stderr[0], /receipt available/);
 
   await signals.get("SIGTERM")();
-  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => {
+    setImmediate(resolve);
+  });
   assert.deepEqual(exits, [0]);
   assert.ok(remote.closeCalls > 0);
 });
@@ -144,7 +151,9 @@ test("handles SIGINT and SIGTERM shutdown callbacks", async (t) => {
   await runMcpBridge();
   await signals.get("SIGINT")();
   await signals.get("SIGTERM")();
-  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => {
+    setImmediate(resolve);
+  });
   assert.deepEqual(exits, [0, 0]);
 });
 
@@ -160,6 +169,8 @@ test("suppresses remote close failures after a paid client is initialized", asyn
   await server.tools.get("solana_priority_fees").handler({ accounts: [] });
   remoteCloseFailure = new Error("remote close failed");
   await signals.get("SIGINT")();
-  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => {
+    setImmediate(resolve);
+  });
   remoteCloseFailure = undefined;
 });

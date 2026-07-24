@@ -90,7 +90,10 @@ export function connectUtilia(options?: {
   name?: string;
   source?: string;
 }): Promise<{
-  callTool(tool: string, args: Record<string, unknown>): Promise<UtiliaToolResult>;
+  callTool(
+    tool: string,
+    args: Record<string, unknown>,
+  ): Promise<UtiliaToolResult>;
   close(): Promise<void>;
 }>;
 

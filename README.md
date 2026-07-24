@@ -29,8 +29,8 @@ settlement can use the guarded client below.
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.3 doctor
-npx -y utilia-solana-agent@0.5.3 audio-normalize \
+npx -y utilia-solana-agent@0.5.4 doctor
+npx -y utilia-solana-agent@0.5.4 audio-normalize \
   https://example.com/voice-note.wav --output voice-note-normalized.mp3
 ```
 
@@ -46,8 +46,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.3 doctor
-npx -y utilia-solana-agent@0.5.3 pdf-to-markdown https://example.com/document.pdf
+npx -y utilia-solana-agent@0.5.4 doctor
+npx -y utilia-solana-agent@0.5.4 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -72,14 +72,14 @@ and [Smithery](https://smithery.ai/skills/medksbuss/utilia-pdf-to-markdown).
 
 ## What agents can do
 
-| Tool | Result | Price |
-| --- | --- | ---: |
-| `solana_priority_fees` | Recent priority-fee quantiles | $0.002 |
-| `solana_transaction_analysis` | Confirmed transaction, deltas, logs, failure guidance | $0.004 |
-| `solana_token_analysis` | Authorities, Token-2022 controls, concentration, risk flags | $0.006 |
-| `solana_transaction_simulate` | Pre-broadcast simulation and failure classification | $0.008 |
-| `pdf_to_markdown` | Page-delimited Markdown, metadata, and a source digest | $0.0025 |
-| `normalize_audio` | Bounded normalized MP3, loudness measurements, and digests | $0.01 |
+| Tool                          | Result                                                      |   Price |
+| ----------------------------- | ----------------------------------------------------------- | ------: |
+| `solana_priority_fees`        | Recent priority-fee quantiles                               |  $0.002 |
+| `solana_transaction_analysis` | Confirmed transaction, deltas, logs, failure guidance       |  $0.004 |
+| `solana_token_analysis`       | Authorities, Token-2022 controls, concentration, risk flags |  $0.006 |
+| `solana_transaction_simulate` | Pre-broadcast simulation and failure classification         |  $0.008 |
+| `pdf_to_markdown`             | Page-delimited Markdown, metadata, and a source digest      | $0.0025 |
+| `normalize_audio`             | Bounded normalized MP3, loudness measurements, and digests  |   $0.01 |
 
 ## Solana quick start
 
@@ -140,7 +140,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent@0.5.3", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.5.4", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -163,9 +163,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent@0.5.3 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
-npx -y utilia-solana-agent@0.5.3 pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent@0.5.3 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.5.4 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.5.4 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.5.4 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 

@@ -26,11 +26,17 @@ export async function saveNormalizedAudio(text, outputPath) {
   }
 
   const bytes = decodeBase64(result.audioBase64);
-  if (!Number.isInteger(result.outputBytes) || result.outputBytes !== bytes.length) {
+  if (
+    !Number.isInteger(result.outputBytes) ||
+    result.outputBytes !== bytes.length
+  ) {
     throw new Error("Utilia audio byte count did not match the payload");
   }
   const digest = crypto.createHash("sha256").update(bytes).digest("hex");
-  if (typeof result.outputSha256 !== "string" || result.outputSha256 !== digest) {
+  if (
+    typeof result.outputSha256 !== "string" ||
+    result.outputSha256 !== digest
+  ) {
     throw new Error("Utilia audio digest verification failed");
   }
 

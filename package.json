@@ -1,6 +1,6 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "mcpName": "ink.utilia/solana-preflight",
   "description": "Pay-per-call audio normalization, PDF-to-Markdown, and budget-capped Solana x402 tools for autonomous agents.",
   "type": "module",
@@ -23,7 +23,11 @@
     "SECURITY.md"
   ],
   "scripts": {
-    "check": "node --check src/*.js",
+    "check": "npm run format:check && npm run lint && npm run typecheck",
+    "format:check": "prettier --check .github scripts src test skills README.md SECURITY.md package.json glama.json eslint.config.js tsconfig.json",
+    "lint": "eslint scripts src test",
+    "typecheck": "tsc --project tsconfig.json",
+    "docker:smoke": "node scripts/docker-mcp-smoke.js",
     "test": "node --test",
     "test:coverage": "c8 --all --include='src/*.js' --check-coverage --lines=100 --functions=100 --branches=100 --statements=100 node --experimental-test-module-mocks --test",
     "pack:check": "npm pack --dry-run"
@@ -71,6 +75,10 @@
     "@hono/node-server": "2.0.11"
   },
   "devDependencies": {
-    "c8": "12.0.0"
+    "@types/node": "22.20.1",
+    "c8": "12.0.0",
+    "eslint": "10.8.0",
+    "prettier": "3.9.6",
+    "typescript": "5.9.3"
   }
 }

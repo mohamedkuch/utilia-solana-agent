@@ -34,24 +34,36 @@ test("parses a budget-capped priority fee watcher", () => {
     maxCalls: 25,
     accounts: [],
   });
-  assert.throws(() => parseCommand(["watch-fees", "--every", "30s"]), /between 60 seconds/);
-  assert.throws(() => parseCommand(["watch-fees", "--max-calls", "501"]), /cannot exceed 500/);
+  assert.throws(
+    () => parseCommand(["watch-fees", "--every", "30s"]),
+    /between 60 seconds/,
+  );
+  assert.throws(
+    () => parseCommand(["watch-fees", "--max-calls", "501"]),
+    /cannot exceed 500/,
+  );
 });
 
 test("parses generic JSON tool calls", () => {
-  assert.deepEqual(parseCommand(["call", "solana_token_analysis", '{"mint":"abc"}']), {
-    type: "call",
-    tool: "solana_token_analysis",
-    args: { mint: "abc" },
-  });
+  assert.deepEqual(
+    parseCommand(["call", "solana_token_analysis", '{"mint":"abc"}']),
+    {
+      type: "call",
+      tool: "solana_token_analysis",
+      args: { mint: "abc" },
+    },
+  );
 });
 
 test("parses the PDF shortcut", () => {
-  assert.deepEqual(parseCommand(["pdf", "https://example.com/file.pdf", "20"]), {
-    type: "call",
-    tool: TOOL_NAMES.pdf,
-    args: { url: "https://example.com/file.pdf", maxPages: 20 },
-  });
+  assert.deepEqual(
+    parseCommand(["pdf", "https://example.com/file.pdf", "20"]),
+    {
+      type: "call",
+      tool: TOOL_NAMES.pdf,
+      args: { url: "https://example.com/file.pdf", maxPages: 20 },
+    },
+  );
   assert.deepEqual(
     parseCommand([
       "pdf-to-markdown",
@@ -65,9 +77,17 @@ test("parses the PDF shortcut", () => {
       args: { url: "https://example.com/file.pdf", maxPages: 20 },
     },
   );
-  assert.throws(() => parseCommand(["pdf", "https://example.com/file.pdf", "101"]), /maxPages/);
   assert.throws(
-    () => parseCommand(["pdf-to-markdown", "https://example.com/file.pdf", "--max-pages"]),
+    () => parseCommand(["pdf", "https://example.com/file.pdf", "101"]),
+    /maxPages/,
+  );
+  assert.throws(
+    () =>
+      parseCommand([
+        "pdf-to-markdown",
+        "https://example.com/file.pdf",
+        "--max-pages",
+      ]),
     /requires a value/,
   );
 });
@@ -106,11 +126,23 @@ test("parses the audio normalization shortcut", () => {
     output: "normalized.mp3",
   });
   assert.throws(
-    () => parseCommand(["audio", "https://example.com/voice.wav", "--target-lufs", "-30"]),
+    () =>
+      parseCommand([
+        "audio",
+        "https://example.com/voice.wav",
+        "--target-lufs",
+        "-30",
+      ]),
     /-24 to -12/,
   );
   assert.throws(
-    () => parseCommand(["audio", "https://example.com/voice.wav", "--max-seconds", "181"]),
+    () =>
+      parseCommand([
+        "audio",
+        "https://example.com/voice.wav",
+        "--max-seconds",
+        "181",
+      ]),
     /1 to 180/,
   );
 });
@@ -140,12 +172,20 @@ test("parses help, version, MCP, doctor, and direct tool shortcuts", () => {
   assert.deepEqual(parseCommand(["simulate", "transaction", "base58"]), {
     type: "call",
     tool: TOOL_NAMES.simulate,
-    args: { transaction: "transaction", encoding: "base58", accountAddresses: [] },
+    args: {
+      transaction: "transaction",
+      encoding: "base58",
+      accountAddresses: [],
+    },
   });
   assert.deepEqual(parseCommand(["simulate", "transaction"]), {
     type: "call",
     tool: TOOL_NAMES.simulate,
-    args: { transaction: "transaction", encoding: "base64", accountAddresses: [] },
+    args: {
+      transaction: "transaction",
+      encoding: "base64",
+      accountAddresses: [],
+    },
   });
   assert.deepEqual(parseCommand(["token", "mint"]), {
     type: "call",
@@ -160,8 +200,14 @@ test("parses help, version, MCP, doctor, and direct tool shortcuts", () => {
 });
 
 test("rejects missing direct-tool arguments and malformed JSON", () => {
-  assert.throws(() => parseCommand(["transaction"]), /requires a Solana signature/);
-  assert.throws(() => parseCommand(["simulate"]), /requires a serialized transaction/);
+  assert.throws(
+    () => parseCommand(["transaction"]),
+    /requires a Solana signature/,
+  );
+  assert.throws(
+    () => parseCommand(["simulate"]),
+    /requires a serialized transaction/,
+  );
   assert.throws(() => parseCommand(["token"]), /requires an SPL mint/);
   assert.throws(() => parseCommand(["call"]), /requires a remote tool name/);
   assert.throws(() => parseCommand(["call", "tool", "{"]), /valid JSON/);
@@ -180,11 +226,26 @@ test("validates every watch-fees option", () => {
     maxCalls: 25,
     accounts: [],
   });
-  assert.throws(() => parseCommand(["watch-fees", "--every"]), /requires a value/);
-  assert.throws(() => parseCommand(["watch-fees", "--every", "soon"]), /must look like/);
-  assert.throws(() => parseCommand(["watch-fees", "--every", "0m"]), /positive integer/);
-  assert.throws(() => parseCommand(["watch-fees", "--every", "25h"]), /between 60 seconds/);
-  assert.throws(() => parseCommand(["watch-fees", "--max-calls", "1.5"]), /positive integer/);
+  assert.throws(
+    () => parseCommand(["watch-fees", "--every"]),
+    /requires a value/,
+  );
+  assert.throws(
+    () => parseCommand(["watch-fees", "--every", "soon"]),
+    /must look like/,
+  );
+  assert.throws(
+    () => parseCommand(["watch-fees", "--every", "0m"]),
+    /positive integer/,
+  );
+  assert.throws(
+    () => parseCommand(["watch-fees", "--every", "25h"]),
+    /between 60 seconds/,
+  );
+  assert.throws(
+    () => parseCommand(["watch-fees", "--max-calls", "1.5"]),
+    /positive integer/,
+  );
   assert.throws(
     () =>
       parseCommand([
@@ -194,7 +255,10 @@ test("validates every watch-fees option", () => {
       ]),
     /cannot exceed 20/,
   );
-  assert.throws(() => parseCommand(["watch-fees", "--unknown", "value"]), /Unknown/);
+  assert.throws(
+    () => parseCommand(["watch-fees", "--unknown", "value"]),
+    /Unknown/,
+  );
 });
 
 test("validates PDF shortcut shape and bounds", () => {
@@ -219,11 +283,17 @@ test("validates PDF shortcut shape and bounds", () => {
       ]),
     /optional --max-pages/,
   );
-  assert.throws(() => parseCommand(["pdf", "https://example.com/file.pdf", "1.5"]), /integer/);
+  assert.throws(
+    () => parseCommand(["pdf", "https://example.com/file.pdf", "1.5"]),
+    /integer/,
+  );
 });
 
 test("validates audio shortcut shape and bounds", () => {
-  assert.throws(() => parseCommand(["audio"]), /requires a public HTTPS audio URL/);
+  assert.throws(
+    () => parseCommand(["audio"]),
+    /requires a public HTTPS audio URL/,
+  );
   assert.throws(
     () => parseCommand(["audio", "https://example.com/audio.wav", "--output"]),
     /requires a value/,
@@ -240,11 +310,22 @@ test("validates audio shortcut shape and bounds", () => {
   );
   assert.throws(
     () =>
-      parseCommand(["audio", "https://example.com/audio.wav", "--max-seconds", "1.5"]),
+      parseCommand([
+        "audio",
+        "https://example.com/audio.wav",
+        "--max-seconds",
+        "1.5",
+      ]),
     /1 to 180/,
   );
   assert.throws(
-    () => parseCommand(["audio", "https://example.com/audio.wav", "--unknown", "value"]),
+    () =>
+      parseCommand([
+        "audio",
+        "https://example.com/audio.wav",
+        "--unknown",
+        "value",
+      ]),
     /Unknown audio option/,
   );
 });

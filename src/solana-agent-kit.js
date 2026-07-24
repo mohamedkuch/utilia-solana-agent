@@ -21,7 +21,9 @@ export function createSolanaAgentKitSigner(agent) {
         transactions.map(async (transaction) => {
           const signature = await wallet.signMessage(transaction.messageBytes);
           if (!(signature instanceof Uint8Array) || signature.length !== 64) {
-            throw new Error("Solana Agent Kit wallet returned an invalid Ed25519 signature");
+            throw new Error(
+              "Solana Agent Kit wallet returned an invalid Ed25519 signature",
+            );
           }
           return { [address]: signature };
         }),
@@ -124,7 +126,9 @@ export function createUtiliaPlugin(options = {}) {
             .array(z.string().min(32).max(44))
             .max(20)
             .default([])
-            .describe("Writable Solana accounts used to localize the fee estimate"),
+            .describe(
+              "Writable Solana accounts used to localize the fee estimate",
+            ),
         }),
         example: {
           input: { accounts: [] },
@@ -158,7 +162,9 @@ export function createUtiliaPlugin(options = {}) {
             .array(z.string().min(32).max(44))
             .max(20)
             .default([])
-            .describe("Accounts whose post-simulation state should be returned"),
+            .describe(
+              "Accounts whose post-simulation state should be returned",
+            ),
         }),
         example: {
           input: {
@@ -186,7 +192,11 @@ export function createUtiliaPlugin(options = {}) {
         description:
           "Pay $0.004 USDC to explain a confirmed Solana transaction, including balance deltas, logs, errors, and failure guidance.",
         schema: z.object({
-          signature: z.string().min(64).max(100).describe("Confirmed Solana signature"),
+          signature: z
+            .string()
+            .min(64)
+            .max(100)
+            .describe("Confirmed Solana signature"),
         }),
         example: {
           input: { signature: "<confirmed-solana-signature>" },
@@ -195,7 +205,8 @@ export function createUtiliaPlugin(options = {}) {
             data: { status: "failed", guidance: ["Review the program error"] },
             payment: { made: true },
           },
-          explanation: "Explains why a submitted transaction succeeded or failed.",
+          explanation:
+            "Explains why a submitted transaction succeeded or failed.",
         },
         invoke: methods.utiliaAnalyzeTransaction,
       }),
@@ -209,7 +220,11 @@ export function createUtiliaPlugin(options = {}) {
         description:
           "Pay $0.006 USDC to inspect an SPL mint's authorities, Token-2022 controls, holder concentration, and evidence-backed risk flags.",
         schema: z.object({
-          mint: z.string().min(32).max(44).describe("Solana token mint address"),
+          mint: z
+            .string()
+            .min(32)
+            .max(44)
+            .describe("Solana token mint address"),
         }),
         example: {
           input: { mint: "<solana-token-mint>" },
@@ -218,7 +233,8 @@ export function createUtiliaPlugin(options = {}) {
             data: { riskLevel: "low", flags: [] },
             payment: { made: true },
           },
-          explanation: "Screens a token mint before an autonomous agent trades it.",
+          explanation:
+            "Screens a token mint before an autonomous agent trades it.",
         },
         invoke: methods.utiliaAnalyzeToken,
       }),

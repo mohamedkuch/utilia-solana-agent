@@ -23,7 +23,10 @@ function forwarded(getRemote, tool) {
 export async function runMcpBridge(options = {}) {
   let remote;
   const getRemote = async () => {
-    remote ??= await connectUtilia({ ...options, name: "utilia-solana-agent-bridge" });
+    remote ??= await connectUtilia({
+      ...options,
+      name: "utilia-solana-agent-bridge",
+    });
     return remote;
   };
   const server = new McpServer(
@@ -38,9 +41,14 @@ export async function runMcpBridge(options = {}) {
     "solana_transaction_analysis",
     {
       title: "Analyze Solana Transaction",
-      description: "Explain a confirmed Solana transaction and classify failures. Costs $0.004.",
+      description:
+        "Explain a confirmed Solana transaction and classify failures. Costs $0.004.",
       inputSchema: { signature: z.string().min(64).max(100) },
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
     forwarded(getRemote, "solana_transaction_analysis"),
   );
@@ -48,13 +56,18 @@ export async function runMcpBridge(options = {}) {
     "solana_transaction_simulate",
     {
       title: "Simulate Solana Transaction",
-      description: "Simulate a transaction before broadcast and classify failures. Costs $0.008.",
+      description:
+        "Simulate a transaction before broadcast and classify failures. Costs $0.008.",
       inputSchema: {
         transaction: z.string().min(40),
         encoding: z.enum(["base64", "base58"]).default("base64"),
         accountAddresses: z.array(z.string()).max(20).default([]),
       },
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
     forwarded(getRemote, "solana_transaction_simulate"),
   );
@@ -65,7 +78,11 @@ export async function runMcpBridge(options = {}) {
       description:
         "Return current network-wide or account-localized priority-fee quantiles before choosing a compute-unit price. Costs $0.002.",
       inputSchema: { accounts: z.array(z.string()).max(20).default([]) },
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
     forwarded(getRemote, "solana_priority_fees"),
   );
@@ -73,9 +90,14 @@ export async function runMcpBridge(options = {}) {
     "solana_token_analysis",
     {
       title: "Analyze Solana Token",
-      description: "Inspect a token mint, authorities, concentration, and risks. Costs $0.006.",
+      description:
+        "Inspect a token mint, authorities, concentration, and risks. Costs $0.006.",
       inputSchema: { mint: z.string() },
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
     forwarded(getRemote, "solana_token_analysis"),
   );
@@ -91,7 +113,11 @@ export async function runMcpBridge(options = {}) {
         title: z.string().trim().min(1).max(200).optional(),
         maxPages: z.coerce.number().int().min(1).max(100).default(50),
       },
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
     forwarded(getRemote, "pdf_to_markdown"),
   );
@@ -107,7 +133,11 @@ export async function runMcpBridge(options = {}) {
         targetLufs: z.coerce.number().min(-24).max(-12).default(-16),
         maxSeconds: z.coerce.number().int().min(1).max(180).default(180),
       },
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
     forwarded(getRemote, "normalize_audio"),
   );
