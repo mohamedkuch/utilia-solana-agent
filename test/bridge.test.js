@@ -51,13 +51,13 @@ const remote = {
 };
 
 mock.module("@modelcontextprotocol/sdk/server/mcp.js", {
-  exports: { McpServer: FakeServer },
+  namedExports: { McpServer: FakeServer },
 });
 mock.module("@modelcontextprotocol/sdk/server/stdio.js", {
-  exports: { StdioServerTransport: FakeTransport },
+  namedExports: { StdioServerTransport: FakeTransport },
 });
 mock.module(new URL("../src/remote.js", import.meta.url).href, {
-  exports: {
+  namedExports: {
     connectUtilia: async (options) => {
       assert.equal(options.name, "utilia-solana-agent-bridge");
       return remote;

@@ -7,7 +7,7 @@ let signerInput;
 let signerFailure;
 
 mock.module("node:fs/promises", {
-  exports: {
+  namedExports: {
     readFile: async (filename, encoding) => {
       assert.equal(encoding, "utf8");
       assert.equal(typeof filename, "string");
@@ -16,7 +16,7 @@ mock.module("node:fs/promises", {
   },
 });
 mock.module("@solana/kit", {
-  exports: {
+  namedExports: {
     createKeyPairSignerFromBytes: async (bytes) => {
       signerInput = bytes;
       if (signerFailure) throw signerFailure;
