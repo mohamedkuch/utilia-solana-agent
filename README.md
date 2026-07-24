@@ -15,8 +15,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent doctor
-npx -y utilia-solana-agent pdf-to-markdown https://example.com/document.pdf
+npx -y github:mohamedkuch/utilia-solana-agent#befa103 doctor
+npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf-to-markdown https://example.com/document.pdf
 ```
 
 Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
@@ -83,7 +83,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent", "mcp"],
+      "args": ["-y", "github:mohamedkuch/utilia-solana-agent#befa103", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -104,8 +104,8 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf <public-https-pdf-url> [max-pages]
+npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 
