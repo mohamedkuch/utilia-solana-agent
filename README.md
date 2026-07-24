@@ -1,8 +1,8 @@
 # utilia-solana-agent
 
-One command gives an AI agent five wallet-funded Solana and document tools. The
-package connects to [Utilia](https://utilia.ink), handles x402 payments locally, and
-can run either as a normal CLI or a standard stdio MCP server.
+Give a Solana bot a live priority-fee signal in one command. The package connects to
+[Utilia](https://utilia.ink), handles x402 payments locally, and can run as a
+budget-capped fee watcher, a normal CLI, or a standard stdio MCP server.
 
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
 and $0.01 in Solana USDC.
@@ -28,7 +28,7 @@ transaction or interacting with an unfamiliar token.
 | `solana_transaction_analysis` | Confirmed transaction, deltas, logs, failure guidance | $0.004 |
 | `solana_token_analysis` | Authorities, Token-2022 controls, concentration, risk flags | $0.006 |
 | `solana_transaction_simulate` | Pre-broadcast simulation and failure classification | $0.008 |
-| `pdf_to_markdown` | Page-delimited Markdown, metadata, and a source digest | $0.01 |
+| `pdf_to_markdown` | Page-delimited Markdown, metadata, and a source digest | $0.0025 |
 
 ## Quick start
 
@@ -40,6 +40,17 @@ export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
 npx -y utilia-solana-agent doctor
 npx -y utilia-solana-agent fees
 ```
+
+For a JSONL fee feed at five calls per hour, capped at 25 calls and **$0.05 total**:
+
+```sh
+npx -y utilia-solana-agent watch-fees --every 12m --max-calls 25
+```
+
+The first result is immediate, then one result is emitted every 12 minutes. The
+process stops after 25 calls; `Ctrl-C` stops it sooner. Localize estimates to the
+writable accounts used by your transaction builder with
+`--accounts account1,account2`.
 
 You can alternatively set `SOLANA_PRIVATE_KEY` to a base58-encoded 64-byte private
 key. Environment variables are inherited by the local process; the private key is
@@ -71,6 +82,7 @@ the paid result.
 
 ```sh
 npx -y utilia-solana-agent fees [account1,account2]
+npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts account1,account2]
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>

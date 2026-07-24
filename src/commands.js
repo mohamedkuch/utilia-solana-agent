@@ -6,6 +6,52 @@ export const TOOL_NAMES = {
   pdf: "pdf_to_markdown",
 };
 
+function parsePositiveInteger(value, label) {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new Error(`${label} must be a positive integer`);
+  }
+  return parsed;
+}
+
+function parseDuration(value) {
+  const match = /^(\d+)(s|m|h)?$/i.exec(value);
+  if (!match) throw new Error("watch-fees --every must look like 60s, 12m, or 1h");
+  const amount = parsePositiveInteger(match[1], "watch-fees --every");
+  const multiplier = { s: 1, m: 60, h: 3_600 }[(match[2] ?? "s").toLowerCase()];
+  const seconds = amount * multiplier;
+  if (seconds < 60 || seconds > 86_400) {
+    throw new Error("watch-fees --every must be between 60 seconds and 24 hours");
+  }
+  return seconds;
+}
+
+function parseWatchFees(rest) {
+  const options = { everySeconds: 720, maxCalls: 25, accounts: [] };
+  for (let index = 0; index < rest.length; index += 1) {
+    const flag = rest[index];
+    const value = rest[index + 1];
+    if (!value) throw new Error(`${flag} requires a value`);
+    if (flag === "--every") {
+      options.everySeconds = parseDuration(value);
+    } else if (flag === "--max-calls") {
+      options.maxCalls = parsePositiveInteger(value, "watch-fees --max-calls");
+      if (options.maxCalls > 500) {
+        throw new Error("watch-fees --max-calls cannot exceed 500");
+      }
+    } else if (flag === "--accounts") {
+      options.accounts = value.split(",").filter(Boolean);
+      if (options.accounts.length > 20) {
+        throw new Error("watch-fees --accounts cannot exceed 20 addresses");
+      }
+    } else {
+      throw new Error(`Unknown watch-fees option: ${flag}`);
+    }
+    index += 1;
+  }
+  return { type: "watch-fees", ...options };
+}
+
 function parseJson(value, label) {
   try {
     return JSON.parse(value);
@@ -22,6 +68,7 @@ export function parseCommand(argv) {
   if (command === "--version" || command === "-v") return { type: "version" };
   if (command === "mcp") return { type: "mcp" };
   if (command === "doctor") return { type: "doctor" };
+  if (command === "watch-fees") return parseWatchFees(rest);
   if (command === "fees") {
     const accounts = rest[0] ? rest[0].split(",").filter(Boolean) : [];
     return { type: "call", tool: TOOL_NAMES.fees, args: { accounts } };

@@ -21,7 +21,7 @@ function forwarded(remote, tool) {
 export async function runMcpBridge(options = {}) {
   const remote = await connectUtilia({ ...options, name: "utilia-solana-agent-bridge" });
   const server = new McpServer(
-    { name: "utilia-solana-agent", version: "0.1.2" },
+    { name: "utilia-solana-agent", version: "0.2.0" },
     {
       instructions:
         "Use these wallet-funded paid tools for Solana intelligence and PDF-to-Markdown extraction. Each approved call costs at most 0.01 USDC.",
@@ -56,7 +56,8 @@ export async function runMcpBridge(options = {}) {
     "solana_priority_fees",
     {
       title: "Estimate Solana Priority Fees",
-      description: "Return current priority-fee quantiles. Costs $0.002.",
+      description:
+        "Return current network-wide or account-localized priority-fee quantiles before choosing a compute-unit price. Costs $0.002.",
       inputSchema: { accounts: z.array(z.string()).max(20).default([]) },
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
     },
@@ -77,7 +78,7 @@ export async function runMcpBridge(options = {}) {
     {
       title: "Convert PDF to Markdown",
       description:
-        "Extract a PDF into page-delimited Markdown with metadata and a source digest. Costs $0.01.",
+        "Extract a PDF into page-delimited Markdown with metadata and a source digest. Costs $0.0025.",
       inputSchema: {
         url: z.string().url().max(2_048).optional(),
         pdfBase64: z.string().max(11_200_000).optional(),
