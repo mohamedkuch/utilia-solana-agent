@@ -5,11 +5,9 @@ description: Convert a public HTTPS PDF into page-delimited Markdown, page count
 
 # Utilia PDF to Markdown
 
-Use the immutable GitHub-pinned `utilia-solana-agent` client shown below. It signs the
+Use the version-pinned `utilia-solana-agent` npm client shown below. It signs the
 exact x402 payment locally and refuses any payment outside Solana mainnet USDC,
-Utilia's verified receiver, or the hard $0.01 per-call ceiling. The pinned source is
-used so the PDF command works even when an npm registry cache still serves an older
-package release.
+Utilia's verified receiver, or the hard $0.01 per-call ceiling.
 
 ## Prepare
 
@@ -27,7 +25,7 @@ user to configure it.
 Verify the wallet and live service before the first paid call:
 
 ```sh
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 doctor
+npx -y utilia-solana-agent@0.3.0 doctor
 ```
 
 ## Convert
@@ -36,13 +34,13 @@ Accept only a public HTTPS URL that points to a PDF. Convert up to 50 pages by
 default:
 
 ```sh
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf-to-markdown <public-https-pdf-url>
+npx -y utilia-solana-agent@0.3.0 pdf-to-markdown <public-https-pdf-url>
 ```
 
 Set a lower or higher page ceiling, up to 100:
 
 ```sh
-npx -y github:mohamedkuch/utilia-solana-agent#befa103 pdf-to-markdown <public-https-pdf-url> --max-pages 100
+npx -y utilia-solana-agent@0.3.0 pdf-to-markdown <public-https-pdf-url> --max-pages 100
 ```
 
 Return the extracted Markdown or use it for the user's requested downstream task.
