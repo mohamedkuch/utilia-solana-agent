@@ -1,6 +1,6 @@
 {
   "name": "utilia-solana-agent",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "mcpName": "ink.utilia/solana-preflight",
   "description": "Pay-per-call Solana transaction diagnosis, simulation, token risk, and live priority fees via guarded x402 payments.",
   "type": "module",
@@ -42,6 +42,10 @@
   },
   "keywords": [
     "solana",
+    "solana-transaction",
+    "transaction-diagnosis",
+    "transaction-analysis",
+    "failed-transaction",
     "x402",
     "mcp",
     "agent",
@@ -60,7 +64,7 @@
   ],
   "author": "Mohamed Kechaou",
   "license": "MIT",
-  "homepage": "https://utilia.ink",
+  "homepage": "https://utilia.ink/solana-transaction-support",
   "bugs": {
     "url": "https://github.com/mohamedkuch/utilia-solana-agent/issues"
   },

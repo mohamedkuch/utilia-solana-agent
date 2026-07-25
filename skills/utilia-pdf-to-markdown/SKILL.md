@@ -25,7 +25,7 @@ user to configure it.
 Verify the wallet and live service before the first paid call:
 
 ```sh
-npx -y utilia-solana-agent@0.5.7 doctor
+npx -y utilia-solana-agent@0.5.8 doctor
 ```
 
 ## Convert
@@ -39,13 +39,13 @@ disk. Standard access and settlement logs retain route, request, network, payer,
 transaction metadata but not document bodies.
 
 ```sh
-npx -y utilia-solana-agent@0.5.7 pdf-to-markdown <public-https-pdf-url>
+npx -y utilia-solana-agent@0.5.8 pdf-to-markdown <public-https-pdf-url>
 ```
 
 Set a lower or higher page ceiling, up to 100:
 
 ```sh
-npx -y utilia-solana-agent@0.5.7 pdf-to-markdown <public-https-pdf-url> --max-pages 100
+npx -y utilia-solana-agent@0.5.8 pdf-to-markdown <public-https-pdf-url> --max-pages 100
 ```
 
 Return the extracted Markdown or use it for the user's requested downstream task.

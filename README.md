@@ -16,8 +16,8 @@ mainnet USDC and SOL for fees:
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.7 doctor
-npx -y utilia-solana-agent@0.5.7 transaction <signature>
+npx -y utilia-solana-agent@0.5.8 doctor
+npx -y utilia-solana-agent@0.5.8 transaction <signature>
 ```
 
 The diagnosis costs exactly **$0.004 USDC** and returns confirmation state, fee,
@@ -28,7 +28,7 @@ retry-aware suggested action.
 
 ```sh
 export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.7 watch-fees \
+npx -y utilia-solana-agent@0.5.8 watch-fees \
   --every 12m \
   --max-calls 25
 ```
@@ -84,9 +84,9 @@ signature, fetch priority fees, inspect a token, or simulate before broadcast.
 The same guarded client also exposes two bounded non-Solana transforms:
 
 ```sh
-npx -y utilia-solana-agent@0.5.7 pdf-to-markdown \
+npx -y utilia-solana-agent@0.5.8 pdf-to-markdown \
   https://example.com/document.pdf --max-pages 20
-npx -y utilia-solana-agent@0.5.7 audio-normalize \
+npx -y utilia-solana-agent@0.5.8 audio-normalize \
   https://example.com/voice-note.wav --output voice-note-normalized.mp3
 ```
 
@@ -157,7 +157,7 @@ Add this stdio server to any MCP client that supports an executable command:
   "mcpServers": {
     "utilia": {
       "command": "npx",
-      "args": ["-y", "utilia-solana-agent@0.5.7", "mcp"],
+      "args": ["-y", "utilia-solana-agent@0.5.8", "mcp"],
       "env": {
         "SOLANA_KEYPAIR_PATH": "/absolute/path/to/automation-wallet.json"
       }
@@ -180,9 +180,9 @@ npx -y utilia-solana-agent watch-fees [--every 12m] [--max-calls 25] [--accounts
 npx -y utilia-solana-agent transaction <signature>
 npx -y utilia-solana-agent simulate <serialized-transaction> [base64|base58]
 npx -y utilia-solana-agent token <mint>
-npx -y utilia-solana-agent@0.5.7 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
-npx -y utilia-solana-agent@0.5.7 pdf <public-https-pdf-url> [max-pages]
-npx -y utilia-solana-agent@0.5.7 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
+npx -y utilia-solana-agent@0.5.8 audio-normalize <public-https-audio-url> [--output normalized.mp3] [--target-lufs -16] [--max-seconds 180]
+npx -y utilia-solana-agent@0.5.8 pdf <public-https-pdf-url> [max-pages]
+npx -y utilia-solana-agent@0.5.8 pdf-to-markdown <public-https-pdf-url> [--max-pages 50]
 npx -y utilia-solana-agent call <tool-name> '<json-arguments>'
 ```
 
