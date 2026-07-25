@@ -23,20 +23,20 @@ and transaction metadata but not audio bodies.
 Check the wallet and service before paying:
 
 ```sh
-npx -y utilia-solana-agent@0.5.6 doctor
+npx -y utilia-solana-agent@0.5.7 doctor
 ```
 
 Normalize to the default podcast/voice target of -16 LUFS:
 
 ```sh
-npx -y utilia-solana-agent@0.5.6 audio-normalize <public-https-audio-url> \
+npx -y utilia-solana-agent@0.5.7 audio-normalize <public-https-audio-url> \
   --output normalized.mp3
 ```
 
 For another target or a shorter bound:
 
 ```sh
-npx -y utilia-solana-agent@0.5.6 audio-normalize <public-https-audio-url> \
+npx -y utilia-solana-agent@0.5.7 audio-normalize <public-https-audio-url> \
   --output normalized.mp3 --target-lufs -18 --max-seconds 90
 ```
 
