@@ -62,11 +62,12 @@ other agent supported by the open Skills CLI:
 
 ```sh
 npx skills add mohamedkuch/utilia-solana-agent \
-  --skill utilia-solana-preflight -g -y
+  --skill utilia-solana-transaction-diagnosis -g -y
 ```
 
-Then ask the agent to use `$utilia-solana-preflight` to diagnose a failed
-signature, fetch priority fees, inspect a token, or simulate before broadcast.
+Then ask the agent to use `$utilia-solana-transaction-diagnosis` to explain a
+failed signature. The broader `$utilia-solana-preflight` skill also covers live
+priority fees, token risk, and pre-broadcast simulation.
 
 ## What agents can do
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Utilia Solana Transaction Diagnosis"
+  short_description: "Explain failed Solana transactions safely"
+  default_prompt: "Use $utilia-solana-transaction-diagnosis to explain this failed Solana signature and recommend the next safe action."
