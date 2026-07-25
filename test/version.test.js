@@ -7,8 +7,21 @@ test("keeps the runtime and package versions aligned", async () => {
   const packageJson = JSON.parse(
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
   );
+  const nvmVersion = (
+    await readFile(new URL("../.nvmrc", import.meta.url), "utf8")
+  ).trim();
+  const workflow = await readFile(
+    new URL("../.github/workflows/ci.yml", import.meta.url),
+    "utf8",
+  );
+
   assert.equal(VERSION, packageJson.version);
   assert.equal(packageJson.mcpName, "ink.utilia/solana-preflight");
+  assert.equal(nvmVersion, "22.23.1");
+  assert.match(packageJson.engines.node, /^>=22/);
+  assert.match(workflow, new RegExp(`node-version: ${nvmVersion}`));
+  assert.match(workflow, /test "\$\(node --version\)" = "v22\.23\.1"/);
+  assert.match(workflow, /test "\$\(npm --version\)" = "10\.9\.8"/);
 });
 
 test("keeps every published instruction aligned with the current client", async () => {
