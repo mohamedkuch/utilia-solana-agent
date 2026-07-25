@@ -2,7 +2,7 @@
   "name": "utilia-solana-agent",
   "version": "0.5.7",
   "mcpName": "ink.utilia/solana-preflight",
-  "description": "Pay-per-call audio normalization, PDF-to-Markdown, and budget-capped Solana x402 tools for autonomous agents.",
+  "description": "Pay-per-call Solana transaction diagnosis, simulation, token risk, and live priority fees via guarded x402 payments.",
   "type": "module",
   "types": "src/index.d.ts",
   "bin": {

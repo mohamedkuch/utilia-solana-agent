@@ -1,12 +1,43 @@
 # utilia-solana-agent
 
-Normalize public audio to a bounded MP3, convert a PDF to agent-ready Markdown, or
-give a Solana bot a live priority-fee signal in one command. The package connects to
-[Utilia](https://utilia.ink), handles x402 payments locally, and can run as a guarded
-CLI, a budget-capped fee watcher, or a standard stdio MCP server.
+Turn a failed Solana signature into a support-ready answer: what landed, what
+changed, why it failed, and what is safe to try next. The package connects to
+[Utilia](https://utilia.ink/solana-transaction-support), handles x402 payments
+locally, and can run as a guarded CLI, a budget-capped fee watcher, or a standard
+stdio MCP server.
 
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
 and $0.01 in USDC on Solana or Base.
+
+## Diagnose one failed transaction
+
+Use a dedicated low-balance Solana automation wallet that holds a small amount of
+mainnet USDC and SOL for fees:
+
+```sh
+export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
+npx -y utilia-solana-agent@0.5.7 doctor
+npx -y utilia-solana-agent@0.5.7 transaction <signature>
+```
+
+The diagnosis costs exactly **$0.004 USDC** and returns confirmation state, fee,
+compute use, SOL and token deltas, program logs, a stable failure class, and a
+retry-aware suggested action.
+
+## Run a budget-capped priority-fee feed
+
+```sh
+export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
+npx -y utilia-solana-agent@0.5.7 watch-fees \
+  --every 12m \
+  --max-calls 25
+```
+
+The first JSONL result is immediate, then one result is emitted every 12 minutes:
+five calls per hour for **$0.01**, with an automatic **$0.05** maximum. Each line
+includes the observation time, fee quantiles, paid amount, and settlement
+transaction. Add `--accounts account1,account2` to localize the estimate to the
+writable accounts in a transaction.
 
 ## Fastest wallet-managed proof
 
@@ -22,53 +53,20 @@ npx -y agentcash@latest fetch \
 This route returns live Solana priority-fee data and settles the exact **$0.002
 USDC** payment on Base. AgentCash creates and manages its own wallet on first
 use; `balance` reports its available funds and funding accounts. Utilia never
-receives or controls the payer's key. Agents that prefer native Solana
-settlement can use the guarded client below.
+receives or controls the payer's key.
 
-## Audio normalization in one command
+## Install the Solana evidence skill
 
-```sh
-export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.7 doctor
-npx -y utilia-solana-agent@0.5.7 audio-normalize \
-  https://example.com/voice-note.wav --output voice-note-normalized.mp3
-```
-
-The call costs exactly **$0.01 USDC**. It normalizes to -16 integrated LUFS by
-default, returns loudness evidence and content digests, verifies the output locally,
-and writes a 128 kbps MP3 without overwriting an existing file. Use
-`--target-lufs -18` or `--max-seconds 90` when needed.
-
-## PDF to Markdown in one command
-
-Use a dedicated low-balance Solana automation wallet that holds a small amount of
-mainnet USDC and SOL for fees:
-
-```sh
-export SOLANA_KEYPAIR_PATH=/absolute/path/to/automation-wallet.json
-npx -y utilia-solana-agent@0.5.7 doctor
-npx -y utilia-solana-agent@0.5.7 pdf-to-markdown https://example.com/document.pdf
-```
-
-Each conversion costs exactly **$0.0025 USDC** and returns page-delimited Markdown,
-metadata, and a source SHA-256 digest. Limit extraction with `--max-pages 20`.
-
-## Install as an agent skill
-
-Install the dedicated PDF skill into Codex, Claude Code, OpenClaw, Cursor, or any
+Install the transaction workflow into Codex, Claude Code, OpenClaw, Cursor, or any
 other agent supported by the open Skills CLI:
 
 ```sh
 npx skills add mohamedkuch/utilia-solana-agent \
-  --skill utilia-pdf-to-markdown -g -y
+  --skill utilia-solana-preflight -g -y
 ```
 
-Then ask the agent to use `$utilia-pdf-to-markdown` on a public PDF. Install
-`utilia-audio-normalization` for audio workflows or `utilia-solana-preflight` for
-Solana transaction workflows.
-The PDF skill is also browsable on
-[skills.sh](https://skills.sh/mohamedkuch/utilia-solana-agent/utilia-pdf-to-markdown)
-and [Smithery](https://smithery.ai/skills/medksbuss/utilia-pdf-to-markdown).
+Then ask the agent to use `$utilia-solana-preflight` to diagnose a failed
+signature, fetch priority fees, inspect a token, or simulate before broadcast.
 
 ## What agents can do
 
@@ -80,6 +78,25 @@ and [Smithery](https://smithery.ai/skills/medksbuss/utilia-pdf-to-markdown).
 | `solana_transaction_simulate` | Pre-broadcast simulation and failure classification         |  $0.008 |
 | `pdf_to_markdown`             | Page-delimited Markdown, metadata, and a source digest      | $0.0025 |
 | `normalize_audio`             | Bounded normalized MP3, loudness measurements, and digests  |   $0.01 |
+
+## PDF and audio utility transforms
+
+The same guarded client also exposes two bounded non-Solana transforms:
+
+```sh
+npx -y utilia-solana-agent@0.5.7 pdf-to-markdown \
+  https://example.com/document.pdf --max-pages 20
+npx -y utilia-solana-agent@0.5.7 audio-normalize \
+  https://example.com/voice-note.wav --output voice-note-normalized.mp3
+```
+
+PDF conversion costs **$0.0025 USDC** and returns page-delimited Markdown,
+metadata, and a source digest. Audio normalization costs **$0.01 USDC**, targets
+-16 integrated LUFS by default, verifies the saved MP3 locally, and returns
+loudness evidence plus content digests.
+
+Dedicated skills are available as `utilia-pdf-to-markdown` and
+`utilia-audio-normalization`.
 
 ## Solana quick start
 

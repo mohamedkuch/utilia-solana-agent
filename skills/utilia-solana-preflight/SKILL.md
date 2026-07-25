@@ -1,6 +1,6 @@
 ---
 name: utilia-solana-preflight
-description: Use Utilia's wallet-funded x402 client for live Solana mainnet priority fees, transaction diagnosis, token-risk inspection, unsigned transaction simulation, PDF-to-Markdown conversion, and audio normalization. Trigger when an agent needs machine-readable Solana evidence, public-PDF extraction, or bounded MP3 loudness normalization and can pay $0.002-$0.01 USDC per call without an API key.
+description: Use Utilia's wallet-funded x402 client for live Solana mainnet priority fees, failed-transaction diagnosis, token-risk inspection, and unsigned transaction simulation. Trigger when an agent needs machine-readable Solana preflight or post-transaction evidence and can pay $0.002-$0.008 USDC per call without an API key.
 ---
 
 # Utilia Solana Preflight
