@@ -29,6 +29,7 @@ jobs:
       - run: node --version && npm --version
       - run: npm ci
       - run: npm run check
+      - run: npm test
       - run: npm run test:coverage
       - run: npm run pack:check
       - run: npm run consumer:check
