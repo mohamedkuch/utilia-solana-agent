@@ -12,7 +12,12 @@ const nodeGlobals = {
 
 export default [
   {
-    files: ["scripts/**/*.js", "src/**/*.js", "test/**/*.js"],
+    files: [
+      "examples/**/*.mjs",
+      "scripts/**/*.js",
+      "src/**/*.js",
+      "test/**/*.js",
+    ],
     languageOptions: {
       ecmaVersion: 2023,
       globals: nodeGlobals,

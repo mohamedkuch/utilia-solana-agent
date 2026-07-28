@@ -9,6 +9,16 @@ stdio MCP server.
 No Utilia account, API key, or subscription is required. Calls cost between $0.002
 and $0.01 in USDC on Solana or Base.
 
+## Copy-paste buyer fixtures
+
+Four guarded examples cover automatic x402 v2 payment and retry over Base MCP,
+Solana MCP, Base HTTP, and Solana HTTP. Each fixture pins the host, network, asset,
+receiver, resource, timeout, per-call maximum, one-call total budget, and exact
+tool before a wallet may sign.
+
+See [examples/buyers/README.md](examples/buyers/README.md). Fixture output is
+explicitly labeled as an operator compatibility test, not customer demand.
+
 ## Diagnose one failed transaction
 
 Use a dedicated low-balance Solana automation wallet that holds a small amount of
