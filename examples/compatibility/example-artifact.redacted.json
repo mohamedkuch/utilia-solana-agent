@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "classification": "operator_compatibility_test_not_customer_demand",
+  "receiptIdSemantics": "correlation_identifier_not_an_authenticated_signed_receipt",
+  "status": "success",
+  "failure": null,
+  "request": {
+    "method": "GET",
+    "url": "https://api.utilia.ink/base/v1/fees/priority?source=public_fixture_example",
+    "source": "public_fixture_example",
+    "requestId": "request_example_redacted",
+    "startedAt": "2026-07-31T12:00:00.000Z",
+    "completedAt": "2026-07-31T12:00:02.000Z"
+  },
+  "lifecycle": {
+    "challengeReceivedAt": "2026-07-31T12:00:01.000Z",
+    "paymentSignedAt": "2026-07-31T12:00:01.250Z",
+    "paidRetryCompletedAt": "2026-07-31T12:00:02.000Z",
+    "settlementReceivedAt": "2026-07-31T12:00:02.000Z",
+    "requestCount": 2
+  },
+  "payment": {
+    "status": "settled",
+    "network": "eip155:8453",
+    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "amountAtomic": "2000",
+    "payer": "0xREDACTED",
+    "payTo": "0xBf9305e6eE38E92C296Aa3Fb0a844977307520fA",
+    "settlementTransaction": "0xSETTLEMENT_REDACTED",
+    "receiptId": "receipt_REDACTED"
+  },
+  "delivery": {
+    "status": "delivered",
+    "httpStatus": 200,
+    "contentType": "application/json",
+    "bodySha256": "f35ded53ca2dd4b6b18c9a451ec129b68f0e1fa17dba2c174c28b53382cafcbb",
+    "bodyBase64": "eyJwcmlvcml0eUZlZUVzdGltYXRlIjoxNTAwLCJzYW1wbGVDb3VudCI6NDJ9",
+    "bodyText": "{\"priorityFeeEstimate\":1500,\"sampleCount\":42}",
+    "json": {
+      "priorityFeeEstimate": 1500,
+      "sampleCount": 42
+    }
+  }
+}

@@ -19,6 +19,17 @@ tool before a wallet may sign.
 See [examples/buyers/README.md](examples/buyers/README.md). Fixture output is
 explicitly labeled as an operator compatibility test, not customer demand.
 
+For a single public, machine-verifiable Base artifact, use the stricter
+[compatibility fixture](examples/compatibility/README.md):
+
+```sh
+BASE_PRIVATE_KEY=0xYOUR_32_BYTE_LOW_BALANCE_KEY npm run --silent compatibility:base -- --source your_runtime_fixture
+```
+
+It caps the payment at $0.002, reuses one request ID across challenge and retry,
+prints a response SHA-256 and settlement evidence, and ships with a public JSON
+Schema plus an offline verifier.
+
 ## Diagnose one failed transaction
 
 Use a dedicated low-balance Solana automation wallet that holds a small amount of
