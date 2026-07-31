@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mohamedkuch/utilia-solana-agent/blob/main/examples/compatibility/utilia-base-priority-fixture.schema.json",
+  "title": "Utilia Base priority-fee x402 compatibility artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "classification",
+    "receiptIdSemantics",
+    "status",
+    "failure",
+    "request",
+    "lifecycle",
+    "payment",
+    "delivery"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "classification": {
+      "const": "operator_compatibility_test_not_customer_demand"
+    },
+    "receiptIdSemantics": {
+      "const": "correlation_identifier_not_an_authenticated_signed_receipt"
+    },
+    "status": { "enum": ["success", "failure"] },
+    "failure": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class", "message"],
+          "properties": {
+            "class": {
+              "enum": [
+                "excessive_quote",
+                "unsupported_network",
+                "payment_failure",
+                "unsuccessful_delivery",
+                "missing_settlement_reference",
+                "result_hash_mismatch",
+                "invalid_configuration",
+                "invalid_source"
+              ]
+            },
+            "message": { "type": "string", "minLength": 1, "maxLength": 512 }
+          }
+        }
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "url",
+        "source",
+        "requestId",
+        "startedAt",
+        "completedAt"
+      ],
+      "properties": {
+        "method": { "const": "GET" },
+        "url": { "type": ["string", "null"], "format": "uri" },
+        "source": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"
+        },
+        "requestId": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$"
+        },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "lifecycle": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "challengeReceivedAt",
+            "paymentSignedAt",
+            "paidRetryCompletedAt",
+            "settlementReceivedAt",
+            "requestCount"
+          ],
+          "properties": {
+            "challengeReceivedAt": {
+              "type": ["string", "null"],
+              "format": "date-time"
+            },
+            "paymentSignedAt": {
+              "type": ["string", "null"],
+              "format": "date-time"
+            },
+            "paidRetryCompletedAt": {
+              "type": ["string", "null"],
+              "format": "date-time"
+            },
+            "settlementReceivedAt": {
+              "type": ["string", "null"],
+              "format": "date-time"
+            },
+            "requestCount": { "type": "integer", "minimum": 0, "maximum": 2 }
+          }
+        }
+      ]
+    },
+    "payment": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "network",
+            "asset",
+            "amountAtomic",
+            "payer",
+            "payTo",
+            "settlementTransaction",
+            "receiptId"
+          ],
+          "properties": {
+            "status": {
+              "enum": ["quote_received", "signed", "settled", "failed"]
+            },
+            "network": { "type": ["string", "null"], "maxLength": 128 },
+            "asset": { "type": ["string", "null"], "maxLength": 42 },
+            "amountAtomic": {
+              "type": ["string", "null"],
+              "pattern": "^[1-9][0-9]{0,39}$"
+            },
+            "payer": { "type": ["string", "null"], "maxLength": 42 },
+            "payTo": { "type": ["string", "null"], "maxLength": 42 },
+            "settlementTransaction": {
+              "type": ["string", "null"],
+              "maxLength": 66
+            },
+            "receiptId": { "type": ["string", "null"], "maxLength": 128 }
+          }
+        }
+      ]
+    },
+    "delivery": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "httpStatus",
+            "contentType",
+            "bodySha256",
+            "bodyBase64",
+            "bodyText",
+            "json"
+          ],
+          "properties": {
+            "status": { "enum": ["received", "delivered", "failed"] },
+            "httpStatus": { "type": "integer", "minimum": 100, "maximum": 599 },
+            "contentType": { "type": ["string", "null"] },
+            "bodySha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "bodyBase64": {
+              "type": "string",
+              "maxLength": 1400000,
+              "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+            },
+            "bodyText": { "type": "string", "maxLength": 1000000 },
+            "json": {}
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["status"],
+        "properties": { "status": { "const": "success" } }
+      },
+      "then": {
+        "properties": {
+          "failure": { "type": "null" },
+          "request": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string" },
+              "source": { "type": "string" },
+              "requestId": { "type": "string" }
+            }
+          },
+          "lifecycle": {
+            "type": "object",
+            "properties": {
+              "challengeReceivedAt": { "type": "string" },
+              "paymentSignedAt": { "type": "string" },
+              "paidRetryCompletedAt": { "type": "string" },
+              "settlementReceivedAt": { "type": "string" }
+            }
+          },
+          "payment": {
+            "type": "object",
+            "properties": {
+              "network": { "type": "string" },
+              "asset": { "type": "string" },
+              "amountAtomic": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$"
+              },
+              "payTo": { "type": "string" },
+              "settlementTransaction": { "type": "string" }
+            }
+          },
+          "delivery": { "type": "object" }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["status"],
+        "properties": { "status": { "const": "failure" } }
+      },
+      "then": {
+        "properties": { "failure": { "type": "object" } }
+      }
+    }
+  ]
+}

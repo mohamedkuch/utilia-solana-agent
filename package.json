@@ -31,6 +31,8 @@
   ],
   "scripts": {
     "check": "npm run format:check && npm run lint && npm run typecheck",
+    "compatibility:base": "node examples/compatibility/base-priority.mjs",
+    "compatibility:verify": "node examples/compatibility/verify-artifact.mjs",
     "format:check": "prettier --check .github examples scripts src test skills README.md SECURITY.md package.json glama.json eslint.config.js tsconfig.json",
     "lint": "eslint examples scripts src test",
     "typecheck": "tsc --project tsconfig.json",
@@ -38,7 +40,9 @@
     "consumer:check": "node scripts/verify-packed-consumer.js",
     "docker:smoke": "node scripts/docker-mcp-smoke.js",
     "test": "node --experimental-test-module-mocks --test",
-    "test:coverage": "c8 --all --include='src/*.js' --check-coverage --lines=100 --functions=100 --branches=100 --statements=100 node --experimental-test-module-mocks --test",
+    "test:coverage": "npm run test:coverage:src && npm run test:coverage:compatibility",
+    "test:coverage:src": "c8 --all --include='src/*.js' --check-coverage --lines=100 --functions=100 --branches=100 --statements=100 node --experimental-test-module-mocks --test",
+    "test:coverage:compatibility": "c8 --all --include='examples/compatibility/lib.mjs' --check-coverage --lines=80 --functions=95 --branches=70 --statements=80 node --experimental-test-module-mocks --test test/compatibility-fixture.test.js",
     "pack:check": "npm pack --dry-run --silent"
   },
   "keywords": [
@@ -84,6 +88,8 @@
     "@x402/fetch": "2.19.0",
     "@x402/mcp": "2.19.0",
     "@x402/svm": "2.19.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "bs58": "6.0.0",
     "viem": "2.55.10",
     "zod": "3.25.76"
@@ -97,5 +103,10 @@
     "eslint": "10.8.0",
     "prettier": "3.9.6",
     "typescript": "5.9.3"
-  }
+  },
+  "bundleDependencies": [
+    "@hono/node-server",
+    "@modelcontextprotocol/sdk",
+    "@x402/mcp"
+  ]
 }
